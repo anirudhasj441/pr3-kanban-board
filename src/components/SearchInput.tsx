@@ -3,7 +3,8 @@ import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 
 const SearchInput: React.FC = () => {
     return (
-        <div className="
+        <div
+            className="
             seerch-container
             mb-3
             group
@@ -12,11 +13,9 @@ const SearchInput: React.FC = () => {
             border-none
 
             outline
-            outline-blue-500
-
-            has-[input:placeholder-shown]:outline-slate-500
+            outline-slate-500
             has-[input:focus]:outline-blue-500
-
+            has-[input:focus]:outline-2
             outline-1
 
             relative
@@ -26,7 +25,8 @@ const SearchInput: React.FC = () => {
             items-center
 
             pe-2
-        ">
+        "
+        >
             <input
                 type="text"
                 id="search-input"
@@ -57,7 +57,7 @@ const SearchInput: React.FC = () => {
                     top-0
                     left-2
                     text-[12px]
-                    text-blue-500
+                    text-slate-500
                     -translate-y-1/2
 
                     peer-focus:top-0

@@ -22,6 +22,7 @@ const createWindow = () => {
         },
     });
 
+    mainWindow.webContents.openDevTools();
     mainWindow.setMenu(null);
     if (process.env.VITE_DEV_SERVER_URL) {
         mainWindow.loadURL(process.env.VITE_DEV_SERVER_URL);
