@@ -1,6 +1,6 @@
 module.exports = {
     root: true,
-    env: { browser: true, es2020: true, node: true, electronAPI: true },
+    env: { browser: true, es2020: true, node: true },
     extends: [
         'eslint:recommended',
         'plugin:@typescript-eslint/recommended',
@@ -14,9 +14,11 @@ module.exports = {
             'warn',
             { allowConstantExport: true },
         ],
-        "electron/require-remote": "off"
+        "electron/require-remote": "off",
+
     },
-    global: {
-        electronAPI: 'readonly'
+    globals: {
+        electronAPI: true,
+        window: true
     }
 }

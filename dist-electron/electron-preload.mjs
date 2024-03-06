@@ -1,5 +1,13 @@
 "use strict";
 const electron = require("electron");
 electron.contextBridge.exposeInMainWorld("electronAPI", {
-  setTitle: (title) => electron.ipcRenderer.send("set-title", title)
+  close: () => {
+    electron.ipcRenderer.send("close");
+  },
+  minimize: () => {
+    electron.ipcRenderer.send("minimize");
+  },
+  maximize: () => {
+    electron.ipcRenderer.send("maximize");
+  }
 });

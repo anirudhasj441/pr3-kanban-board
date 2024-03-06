@@ -29,7 +29,7 @@ const LeftDrawer: React.FC = () => {
                 </ScrollArea.Scrollbar>
             </ScrollArea.Root>
             <div className="w-full text-center">
-                <Button color="blue" size={"3"} className="cursor-pointer">
+                <Button size={"3"} className="cursor-pointer">
                     Create Project
                 </Button>
             </div>

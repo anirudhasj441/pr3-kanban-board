@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from "electron";
+import { app, ipcMain, BrowserWindow } from "electron";
 import path from "path";
 import { fileURLToPath } from "url";
 console.log("path: ", path.dirname(fileURLToPath(import.meta.url)));
@@ -24,11 +24,24 @@ const createWindow = () => {
   } else {
     mainWindow.loadFile("dist/index.html");
   }
-  ipcMain.on("set-title", (event, title) => {
-    console.log("title: ", title);
-  });
 };
-app.whenReady().then(createWindow);
+app.whenReady().then(() => {
+  createWindow();
+  ipcMain.on("close", () => {
+    mainWindow == null ? void 0 : mainWindow.close();
+  });
+  ipcMain.on("minimize", () => {
+    mainWindow == null ? void 0 : mainWindow.minimize();
+  });
+  ipcMain.on("maximize", () => {
+    console.log("Maximizing: ");
+    if (mainWindow == null ? void 0 : mainWindow.isMaximized()) {
+      mainWindow == null ? void 0 : mainWindow.unmaximize();
+    } else {
+      mainWindow == null ? void 0 : mainWindow.maximize();
+    }
+  });
+});
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin")
     app.quit();

@@ -1,5 +1,4 @@
 import { app, BrowserWindow, ipcMain } from "electron";
-// import { contextBridge } from "electron/renderer";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -29,13 +28,25 @@ const createWindow = () => {
     } else {
         mainWindow.loadFile("dist/index.html");
     }
-
-    ipcMain.on("set-title", (event, title) => {
-        console.log("title: ", title);
-    });
 };
 
-app.whenReady().then(createWindow);
+app.whenReady().then(() => {
+    createWindow();
+    ipcMain.on("close", () => {
+        mainWindow?.close();
+    });
+    ipcMain.on("minimize", () => {
+        mainWindow?.minimize();
+    });
+    ipcMain.on("maximize", () => {
+        console.log("Maximizing: ");
+        if (mainWindow?.isMaximized()) {
+            mainWindow?.unmaximize();
+        } else {
+            mainWindow?.maximize();
+        }
+    });
+});
 
 app.on("window-all-closed", () => {
     if (process.platform !== "darwin") app.quit();

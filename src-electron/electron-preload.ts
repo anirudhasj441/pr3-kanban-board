@@ -1,5 +1,13 @@
 import { contextBridge, ipcRenderer } from "electron";
 
 contextBridge.exposeInMainWorld("electronAPI", {
-    setTitle: (title: string) => ipcRenderer.send("set-title", title),
+    close: () => {
+        ipcRenderer.send("close");
+    },
+    minimize: () => {
+        ipcRenderer.send("minimize");
+    },
+    maximize: () => {
+        ipcRenderer.send("maximize");
+    },
 });
