@@ -1,30 +1,32 @@
-# React + TypeScript + Vite
+# Kanban board
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is a mini project, i try to build for exploring react capabilities.
 
-Currently, two official plugins are available:
+In this project user can create multiple project and each broject has one board consists of three status column [Todo, In progress, completed],
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+It will have drag and drop compability, to reorder tasks and change status.
 
-## Expanding the ESLint configuration
+I had work with electron js and I want to focus only on react now, So I planned to crate a desktop application using elecron js instead of web app, so i don't worry about db, backend server and all.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+Tech Stack:
 
-- Configure the top-level `parserOptions` property like this:
+1. React
+2. React Router
+3. Vite
+4. Tailwindcss
+5. Radix ui components
+6. Electron
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+## Steps to run
+
+1. Install all dependencies
+
+```bash
+$ npm install
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+2. start in dev mode
+
+```bash
+$ npm start
+```
