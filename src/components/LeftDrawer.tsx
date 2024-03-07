@@ -5,7 +5,7 @@ import * as ScrollArea from "@radix-ui/react-scroll-area";
 
 const LeftDrawer: React.FC = () => {
     return (
-        <div className="h-full p-5 flex flex-col">
+        <div className="h-full p-5 flex flex-col bg-gray-50 border-r-[0.2px]">
             <SearchInput />
             <ScrollArea.Root className="flex-1 overflow-hidden">
                 <ScrollArea.Viewport className="h-full w-full">

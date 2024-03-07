@@ -18,12 +18,14 @@
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "react-router-dom": "^6.22.2",
+        "react-splitter-layout": "^4.0.0",
         "sass": "^1.71.1",
         "zustand": "^4.5.2"
     },
     "devDependencies": {
         "@types/react": "^18.2.56",
         "@types/react-dom": "^18.2.19",
+        "@types/react-splitter-layout": "^3.0.5",
         "@typescript-eslint/eslint-plugin": "^7.0.2",
         "@typescript-eslint/parser": "^7.0.2",
         "@vitejs/plugin-react": "^4.2.1",

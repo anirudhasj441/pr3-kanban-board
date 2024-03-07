@@ -12,9 +12,12 @@ const SearchInput: React.FC = () => {
             rounded-md
             border-none
 
+            transition-all
+            duration-800
+            ease-in-out
             outline
             outline-slate-500
-            has-[input:focus]:outline-blue-500
+            has-[input:focus]:outline-indigo-700
             has-[input:focus]:outline-2
             outline-1
 
@@ -37,8 +40,7 @@ const SearchInput: React.FC = () => {
                     border-none
                     outline-none
                     flex-1
-                    bg-t
-                    ransparent
+                    bg-transparent
                     placeholder:text-transparent
                 "
                 placeholder="seacrh"
@@ -51,7 +53,6 @@ const SearchInput: React.FC = () => {
                     ease-in-out
                     duration-500
                     transition-all
-                    bg-white
                     z-9
 
                     top-0
@@ -59,16 +60,19 @@ const SearchInput: React.FC = () => {
                     text-[12px]
                     text-slate-500
                     -translate-y-1/2
+                    bg-gray-50
 
                     peer-focus:top-0
                     peer-focus:left-2
                     peer-focus:text-[12px]
-                    peer-focus:text-blue-500
+                    peer-focus:text-indigo-700
+                    peer-focus:bg-gray-50
 
                     peer-placeholder-shown:top-1/2
                     peer-placeholder-shown:left-0
                     peer-placeholder-shown:text-slate-500
                     peer-placeholder-shown:text-base
+                    peer-placeholder-shown:bg-transparent
                 "
             >
                 Search Project
@@ -76,7 +80,7 @@ const SearchInput: React.FC = () => {
             <MagnifyingGlassIcon
                 height="30"
                 width={30}
-                className="peer-focus:text-blue-500 text-slate-500"
+                className="peer-focus:text-indigo-700 text-slate-500"
             />
         </div>
     );

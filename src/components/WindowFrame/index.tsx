@@ -7,7 +7,7 @@ import { Cross1Icon, MinusIcon, BoxIcon } from "@radix-ui/react-icons";
 
 const WindowFrame: React.FC = () => {
     return (
-        <nav className="w-full frame text-white flex bg-indigo-800 justify-center">
+        <nav className="w-full frame text-white flex bg-indigo-700 justify-center">
             <div className="flex-1"></div>
             <div className="flex-1 my-auto">
                 <div className="text-center text-1xl">Kanban board</div>
