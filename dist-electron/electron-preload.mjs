@@ -9,5 +9,17 @@ electron.contextBridge.exposeInMainWorld("electronAPI", {
   },
   maximize: () => {
     electron.ipcRenderer.send("maximize");
+  },
+  createProject: (projectTitle) => {
+    electron.ipcRenderer.send("createProject", projectTitle);
+  },
+  getProjects: () => {
+    electron.ipcRenderer.send("getProjects");
+  },
+  receive: (channel, func) => {
+    electron.ipcRenderer.on(
+      channel,
+      (event, ...args) => func(...args)
+    );
   }
 });

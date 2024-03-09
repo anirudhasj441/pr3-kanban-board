@@ -1,10 +1,17 @@
 import { app, BrowserWindow, ipcMain } from "electron";
 import path from "path";
 import { fileURLToPath } from "url";
+import DbModel from "./db";
+import { Project } from "../types";
 
 console.log("path: ", path.dirname(fileURLToPath(import.meta.url)));
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __filename: string = fileURLToPath(import.meta.url);
+const __dirname: string = path.dirname(__filename);
+
+export const BASE_PATH: string = path.join(
+    app.getPath("userData"),
+    "kanban_board"
+);
 
 let mainWindow: BrowserWindow | undefined;
 
@@ -32,6 +39,7 @@ const createWindow = () => {
 
 app.whenReady().then(() => {
     createWindow();
+    const dbModel = new DbModel();
     ipcMain.on("close", () => {
         mainWindow?.close();
     });
@@ -45,6 +53,18 @@ app.whenReady().then(() => {
         } else {
             mainWindow?.maximize();
         }
+    });
+    ipcMain.on(
+        "createProject",
+        (evt: Electron.IpcMainEvent, projectTitle: string) => {
+            dbModel.createProject(projectTitle);
+            console.log("Creating Project ");
+            dbModel.setJson();
+        }
+    );
+    ipcMain.on("getProjects", (event: Electron.IpcMainEvent) => {
+        const projects: Project[] = dbModel.getAllProject();
+        event.sender.send("getProjects", projects);
     });
 });
 
