@@ -39,10 +39,12 @@ const LeftDrawer: React.FC = () => {
     }, []);
 
     return (
-        <div className="h-full p-5 flex flex-col bg-gray-50 border-r-[0.2px]">
-            <SearchInput />
+        <div className="h-full py-5 flex flex-col bg-gray-50 border-r-[0.2px]">
+            <div className="px-5">
+                <SearchInput />
+            </div>
             <ScrollArea.Root className="flex-1 overflow-hidden">
-                <ScrollArea.Viewport className="h-full w-full">
+                <ScrollArea.Viewport className="h-full w-full px-5">
                     <ul className="list-none flex flex-col gap-3">
                         {projects.map((project: Project) => (
                             <li
@@ -58,7 +60,7 @@ const LeftDrawer: React.FC = () => {
                     orientation="vertical"
                     className="flex w-[12px]"
                 >
-                    <ScrollArea.Thumb className="bg-gray-300 transition-background ease-out duration-500 flex-1 rounded-md" />
+                    <ScrollArea.Thumb className="bg-gray-300 transition-background flex-1 rounded-md" />
                 </ScrollArea.Scrollbar>
             </ScrollArea.Root>
             <div className="w-full text-center">

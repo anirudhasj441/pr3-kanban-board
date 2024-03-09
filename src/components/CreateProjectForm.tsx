@@ -14,7 +14,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProp> = (props) => {
     const createProject = useCallback(() => {
         electronAPI.createProject(title);
         props.onCreate(true);
-    }, [title]);
+    }, [props, title]);
 
     return (
         <div className="flex flex-col">

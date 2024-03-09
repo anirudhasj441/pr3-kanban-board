@@ -131,6 +131,7 @@ const createWindow = () => {
     webPreferences: {
       preload: path.join(__dirname, "electron-preload.mjs"),
       devTools: true,
+      contextIsolation: true,
       nodeIntegration: true
     }
   });
