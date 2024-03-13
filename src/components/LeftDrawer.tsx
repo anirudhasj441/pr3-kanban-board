@@ -6,6 +6,7 @@ import { Button } from "@radix-ui/themes";
 import { Project } from "../../types";
 import * as ScrollArea from "@radix-ui/react-scroll-area";
 import * as Dialog from "@radix-ui/react-dialog";
+import { Link, NavLink } from "react-router-dom";
 
 const LeftDrawer: React.FC = () => {
     const effectRan = useRef(false);
@@ -39,7 +40,7 @@ const LeftDrawer: React.FC = () => {
     }, []);
 
     return (
-        <div className="h-full py-5 flex flex-col bg-gray-50 border-r-[0.2px]">
+        <div className="h-full py-5 flex flex-col bg-gray-50 border-r-[0.2px] shadow-2xl">
             <div className="px-5">
                 <SearchInput />
             </div>
@@ -49,18 +50,32 @@ const LeftDrawer: React.FC = () => {
                         {projects.map((project: Project) => (
                             <li
                                 key={project._id}
-                                className="p-2 rounded-md hover:bg-gray-200 transition cursor-pointer"
+                                // className="p-2 rounded-md hover:bg-gray-200 transition cursor-pointer"
                             >
-                                {project.title}
+                                <NavLink
+                                    to={"/" + project._id}
+                                    className={({ isActive, isPending }) =>
+                                        [
+                                            isActive
+                                                ? "text-indigo-500 bg-gray-200"
+                                                : isPending
+                                                ? "text-gray-800"
+                                                : "",
+                                            "block p-2 rounded-md hover:bg-gray-200 transition cursor-pointer",
+                                        ].join(" ")
+                                    }
+                                >
+                                    {project.title}
+                                </NavLink>
                             </li>
                         ))}
                     </ul>
                 </ScrollArea.Viewport>
                 <ScrollArea.Scrollbar
                     orientation="vertical"
-                    className="flex w-[12px]"
+                    className="flex w-[12px] rounded-sm"
                 >
-                    <ScrollArea.Thumb className="bg-gray-300 transition-background flex-1 rounded-md" />
+                    <ScrollArea.Thumb className="bg-gray-300 transition-background flex-1 rounded-sm" />
                 </ScrollArea.Scrollbar>
             </ScrollArea.Root>
             <div className="w-full text-center">
@@ -77,7 +92,7 @@ const LeftDrawer: React.FC = () => {
                         className="fixed backdrop-blur-sm transition-all duration-900 ease-linear z-50"
                         style={{ inset: 0 }}
                     />
-                    <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gray-200 p-4 z-50 rounded-md w-[500px] max-w-full">
+                    <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gray-100 p-4 z-50 rounded-md w-[350px] max-w-full shadow-lg">
                         <Dialog.Title className="text-2xl text-left mb-2">
                             Crate Project
                         </Dialog.Title>

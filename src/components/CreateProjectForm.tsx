@@ -12,6 +12,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProp> = (props) => {
     const [title, setTitle] = useState("");
 
     const createProject = useCallback(() => {
+        if (title === "") return;
         electronAPI.createProject(title);
         props.onCreate(true);
     }, [props, title]);
