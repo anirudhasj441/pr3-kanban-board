@@ -11,7 +11,7 @@ const LeftDrawer = React.lazy(() => import("../../components/LeftDrawer"));
 const MainLayout: React.FC = () => {
     return (
         <>
-            <div className="h-svh flex flex-col select-none font-roboto">
+            <div className="h-svh flex flex-col select-none font-roboto bg-gray-100">
                 <WindowFrame />
                 <div className="flex-1 relative">
                     <SplitterLayout
