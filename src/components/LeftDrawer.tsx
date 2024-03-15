@@ -4,9 +4,9 @@ import SearchInput from "./SearchInput";
 import CreateProjectForm from "./CreateProjectForm";
 import { Button } from "@radix-ui/themes";
 import { Project } from "../../types";
-import * as ScrollArea from "@radix-ui/react-scroll-area";
 import * as Dialog from "@radix-ui/react-dialog";
 import { Link, NavLink } from "react-router-dom";
+import MyScrollArea from "./ScrollArea";
 
 const LeftDrawer: React.FC = () => {
     const effectRan = useRef(false);
@@ -44,8 +44,7 @@ const LeftDrawer: React.FC = () => {
             <div className="px-5">
                 <SearchInput />
             </div>
-            <ScrollArea.Root className="flex-1 overflow-hidden">
-                <ScrollArea.Viewport className="h-full w-full px-5">
+                <MyScrollArea>
                     <ul className="list-none flex flex-col gap-3">
                         {projects.map((project: Project) => (
                             <li
@@ -57,7 +56,7 @@ const LeftDrawer: React.FC = () => {
                                     className={({ isActive, isPending }) =>
                                         [
                                             isActive
-                                                ? "text-indigo-500 bg-gray-200"
+                                                ? "text-indigo-700 bg-indigo-100"
                                                 : isPending
                                                 ? "text-gray-800"
                                                 : "",
@@ -70,14 +69,7 @@ const LeftDrawer: React.FC = () => {
                             </li>
                         ))}
                     </ul>
-                </ScrollArea.Viewport>
-                <ScrollArea.Scrollbar
-                    orientation="vertical"
-                    className="flex w-[12px] rounded-sm"
-                >
-                    <ScrollArea.Thumb className="bg-gray-300 transition-background flex-1 rounded-sm" />
-                </ScrollArea.Scrollbar>
-            </ScrollArea.Root>
+            </MyScrollArea>
             <div className="w-full text-center">
                 <Dialog.Root open={dialogState} onOpenChange={setDailogState}>
                     <Dialog.Trigger asChild>

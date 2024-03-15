@@ -18,14 +18,62 @@ const ProjectPage: React.FC = () => {
             desc: "",
             status: "todo",
         },
+        {
+            _id: "schdacdgcvjdh-scds-dvsvs",
+            task: "Task 1",
+            desc: "",
+            status: "todo",
+        },
+        {
+            _id: "schdacdgcvjdh-scds-dvsvs",
+            task: "Task 1",
+            desc: "",
+            status: "todo",
+        },
+        {
+            _id: "schdacdgcvjdh-scds-dvsvs",
+            task: "Task 1",
+            desc: "",
+            status: "todo",
+        },
+        {
+            _id: "schdacdgcvjdh-scds-dvsvs",
+            task: "Task 1",
+            desc: "",
+            status: "todo",
+        },
+        {
+            _id: "schdacdgcvjdh-scds-dvsvs",
+            task: "Task 1",
+            desc: "",
+            status: "todo",
+        },
+        {
+            _id: "schdacdgcvjdh-scds-dvsvs",
+            task: "Task 1",
+            desc: "",
+            status: "todo",
+        },
+        {
+            _id: "schdacdgcvjdh-scds-dvsvs",
+            task: "Task 1",
+            desc: "",
+            status: "todo",
+        },
+        {
+            _id: "schdacdgcvjdh-scds-dvsvs",
+            task: "Task 1",
+            desc: "",
+            status: "todo",
+        },
     ];
     return (
         <div className="flex gap-5 h-full">
-            <Board title="Todo" tasks={tasks} color_class="border-indigo-700" />
+            <Board title="Todo" tasks={tasks} color_class="border-gray-500" />
             <Board
                 title="In Progress"
                 tasks={[]}
-                color_class="border-gray-500"
+                color_class="border-indigo-700"
             />
             <Board title="Done" tasks={[]} color_class="border-green-500" />
         </div>

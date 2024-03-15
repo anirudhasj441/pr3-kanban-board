@@ -3,6 +3,7 @@ import { Task } from "../../types";
 import Space from "./Space";
 import { Icon } from "@iconify-icon/react";
 import TaskCard from "./TaskCard";
+import MyScrollArea from "./ScrollArea";
 
 interface BoardProps {
     title: string;
@@ -44,14 +45,25 @@ const Board: React.FC<BoardProps> = (props: BoardProps) => {
                     />
                 </button>
             </div>
-            <div className="board group rounded-md flex-1 flex flex-col gap-2">
-                {props.tasks.map((task: Task) => (
-                    <TaskCard key={task._id} task={task} />
-                ))}
-                <button className="text-sm text-slate-600 opacity-0 bg-gray-100 hover:bg-gray-300 group-hover:opacity-100 px-2 py-2 w-max rounded-md transition-opacity duration-500 flex gap-1 items-center">
-                    <Icon icon="material-symbols:add" className="block" />
-                    <div>New Task</div>
-                </button>
+            <div className="board group flex-1 overflow-hidden">
+                <MyScrollArea className="rounded-md h-full">
+                    <ul className="flex flex-col gap-3">
+                        {props.tasks.map((task: Task) => (
+                            <li>
+                                <TaskCard key={task._id} task={task} />
+                            </li>
+                        ))}
+                        <li>
+                            <button className="text-sm text-slate-600 opacity-0 bg-gray-100 hover:bg-gray-300 group-hover:opacity-100 px-2 py-2 w-max rounded-md transition-opacity duration-500 flex gap-1 items-center">
+                                <Icon
+                                    icon="material-symbols:add"
+                                    className="block"
+                                />
+                                <div>New Task</div>
+                            </button>
+                        </li>
+                    </ul>
+                </MyScrollArea>
             </div>
         </div>
     );
