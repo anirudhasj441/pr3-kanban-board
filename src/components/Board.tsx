@@ -47,7 +47,7 @@ const Board: React.FC<BoardProps> = (props: BoardProps) => {
             </div>
             <div className="board group flex-1 overflow-hidden">
                 <MyScrollArea className="rounded-md h-full">
-                    <ul className="flex flex-col gap-3">
+                    <ul className="flex flex-col gap-2">
                         {props.tasks.map((task: Task) => (
                             <li>
                                 <TaskCard key={task._id} task={task} />
