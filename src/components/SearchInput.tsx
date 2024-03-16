@@ -42,6 +42,7 @@ const SearchInput: React.FC = () => {
                     flex-1
                     bg-transparent
                     placeholder:text-transparent
+                    z-10
                 "
                 placeholder="seacrh"
             />

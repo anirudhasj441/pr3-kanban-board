@@ -63,6 +63,16 @@ export default class DbModel {
         return task;
     };
 
+    getAllTasks = (projectId: string): Task[] | undefined => {
+        const project: Project | undefined = this.db.projects.find(
+            (project: Project) => project._id == projectId
+        );
+
+        const tasks: Task[] | undefined = project?.tasks;
+
+        return tasks;
+    };
+
     createProject = (title: string): void => {
         const project: Project = {
             _id: uuidv4(),
@@ -74,11 +84,11 @@ export default class DbModel {
     };
 
     createTask = (
-        projectTitle: string,
+        projectId: string,
         taskTitle: string,
         status: Status
     ): void => {
-        const project: Project | undefined = this.getProject(projectTitle);
+        const project: Project | undefined = this.getProject(projectId);
         if (!project) return;
 
         const task: Task = {
@@ -89,5 +99,34 @@ export default class DbModel {
         };
 
         project?.tasks.push(task);
+    };
+
+    deleteTask = (projectId: string, taskId: string) => {
+        const project: Project | undefined = this.getProject(projectId);
+
+        const taskIndex: number | undefined = project?.tasks.findIndex(
+            (task: Task) => task._id == taskId
+        );
+
+        console.log("task index: ", taskIndex);
+
+        if (typeof taskIndex !== "undefined") {
+            project?.tasks.splice(taskIndex, 1);
+        }
+    };
+
+    deleteProject = (projectId: string) => {
+        const project: Project | undefined = this.getProject(projectId);
+        const projects: Project[] = this.getAllProject();
+        if (project) {
+            const projectIndex: number = projects.indexOf(project);
+            projects.splice(projectIndex, 1);
+        }
+    };
+
+    projectExists = (projectId: string) => {
+        const project: Project | undefined = this.getProject(projectId);
+
+        return project !== undefined;
     };
 }

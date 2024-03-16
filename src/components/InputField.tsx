@@ -1,10 +1,12 @@
-import React from "react";
+import React, { KeyboardEventHandler } from "react";
 import { useState, useRef } from "react";
 
 interface InputFieldProp {
     id: string;
     label: string;
+    autoFocus?: boolean | undefined;
     onValueChange: (value: string) => void;
+    onKeyDown?: KeyboardEventHandler<HTMLInputElement> | undefined;
 }
 
 const InputField: React.FC<InputFieldProp> = (props) => {
@@ -23,7 +25,6 @@ const InputField: React.FC<InputFieldProp> = (props) => {
         <div
             className="
                 seerch-container
-                mb-3
                 group
 
                 rounded-md
@@ -51,6 +52,7 @@ const InputField: React.FC<InputFieldProp> = (props) => {
                 type="text"
                 id={props.id}
                 ref={input}
+                autoFocus={props.autoFocus}
                 className="
                     peer
                     px-2
@@ -61,10 +63,12 @@ const InputField: React.FC<InputFieldProp> = (props) => {
                     flex-1
                     bg-transparent
                     placeholder:text-transparent
+                    z-10
                 "
                 value={value}
                 onChange={valueChanged}
                 placeholder="seacrh"
+                onKeyDown={props.onKeyDown ? props.onKeyDown : undefined}
             />
             <label
                 htmlFor="search-input"
@@ -100,6 +104,10 @@ const InputField: React.FC<InputFieldProp> = (props) => {
             </label>
         </div>
     );
+};
+
+InputField.defaultProps = {
+    autoFocus: false,
 };
 
 export default InputField;

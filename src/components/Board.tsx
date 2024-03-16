@@ -1,17 +1,77 @@
-import React from "react";
-import { Task } from "../../types";
+import React, { useEffect, useRef, useState, useCallback } from "react";
+import { Status, Task } from "../../types";
 import Space from "./Space";
 import { Icon } from "@iconify-icon/react";
 import TaskCard from "./TaskCard";
 import MyScrollArea from "./ScrollArea";
+import CreateTaskForm from "./CreateTaskForm";
 
 interface BoardProps {
     title: string;
-    tasks: Task[];
+    project_id: string;
+    status: Status;
     color_class?: string | undefined;
 }
 
 const Board: React.FC<BoardProps> = (props: BoardProps) => {
+    const effectRan = useRef(false);
+
+    const [showForm, setShowForm] = useState<boolean>(false);
+
+    const [tasks, setTasks] = useState<Task[]>([]);
+
+    const getTasks = useCallback(() => {
+        console.log("Tasks fetchning ");
+        if (typeof window !== "undefined")
+            electronAPI.getTasks(props.project_id);
+    }, [props.project_id]);
+
+    const createTask = useCallback(
+        (taskTitle: string) => {
+            console.log("CREATING TASK!!!");
+            if (taskTitle === "") return;
+            electronAPI.createTask(props.project_id, taskTitle, props.status);
+            setShowForm(false);
+            getTasks();
+        },
+        [props, setShowForm, getTasks]
+    );
+
+    const handleGetTasks = useCallback(
+        (tasks: Task[]) => {
+            const taskList = tasks.filter(
+                (task: Task) => task.status == props.status
+            );
+            setTasks(taskList);
+        },
+        [setTasks, props.status]
+    );
+
+    const handleOnDelete = useCallback(
+        (taskId: string) => {
+            console.log("task id: ", taskId);
+            electronAPI.deleteTask(props.project_id, taskId);
+            getTasks();
+        },
+        [props, getTasks]
+    );
+
+    useEffect(() => {
+        if (effectRan.current) {
+            getTasks();
+            electronAPI.receive("getTasks", handleGetTasks);
+        }
+        return () => {
+            effectRan.current = true;
+        };
+    }, [getTasks, handleGetTasks]);
+
+    useEffect(() => {
+        if (showForm) {
+            document.getElementById("task-form")?.focus();
+        }
+    }, [showForm]);
+
     return (
         <div className="flex flex-col h-full flex-1 gap-5">
             <div
@@ -33,10 +93,13 @@ const Board: React.FC<BoardProps> = (props: BoardProps) => {
             >
                 <h6 className="">{props.title}</h6>
                 <div className="badge px-2 py-0  rounded-xl border-[1px] border-slate-300">
-                    {props.tasks.length}
+                    {tasks.length}
                 </div>
                 <Space />
-                <button className="p-1 opacity-0 group-hover:opacity-100 hover:bg-gray-300 rounded-md">
+                <button
+                    className="p-1 opacity-0 group-hover:opacity-100 hover:bg-gray-300 rounded-md"
+                    onClick={() => setShowForm(true)}
+                >
                     <Icon
                         icon="material-symbols:add"
                         className="block text-slate-600"
@@ -48,13 +111,43 @@ const Board: React.FC<BoardProps> = (props: BoardProps) => {
             <div className="board group flex-1 overflow-hidden">
                 <MyScrollArea className="rounded-md h-full">
                     <ul className="flex flex-col gap-2">
-                        {props.tasks.map((task: Task) => (
-                            <li>
-                                <TaskCard key={task._id} task={task} />
+                        {tasks.map((task: Task) => (
+                            <li key={task._id}>
+                                <TaskCard
+                                    task={task}
+                                    onDelete={handleOnDelete}
+                                />
                             </li>
                         ))}
+                        {showForm ? (
+                            <li
+                                id="task-form"
+                                onBlur={() => {
+                                    setShowForm(false);
+                                }}
+                            >
+                                <CreateTaskForm onCreate={createTask} />
+                            </li>
+                        ) : null}
                         <li>
-                            <button className="text-sm text-slate-600 opacity-0 bg-gray-100 hover:bg-gray-300 group-hover:opacity-100 px-2 py-2 w-max rounded-md transition-opacity duration-500 flex gap-1 items-center">
+                            <button
+                                className="
+                                    text-sm
+                                    text-slate-600
+                                    opacity-0
+                                    bg-gray-100
+                                    hover:bg-gray-300
+                                    group-hover:opacity-100
+                                    px-2 py-2 w-max
+                                    rounded-md
+                                    transition-opacity
+                                    duration-500
+                                    flex
+                                    gap-1
+                                    items-center
+                                "
+                                onClick={() => setShowForm(true)}
+                            >
                                 <Icon
                                     icon="material-symbols:add"
                                     className="block"

@@ -5,13 +5,21 @@ import CreateProjectForm from "./CreateProjectForm";
 import { Button } from "@radix-ui/themes";
 import { Project } from "../../types";
 import * as Dialog from "@radix-ui/react-dialog";
-import { Link, NavLink } from "react-router-dom";
+import {
+    NavLink,
+    NavigateFunction,
+    useLocation,
+    useNavigate,
+} from "react-router-dom";
 import MyScrollArea from "./ScrollArea";
+import { Icon } from "@iconify-icon/react/dist/iconify.mjs";
 
 const LeftDrawer: React.FC = () => {
     const effectRan = useRef(false);
     const [dialogState, setDailogState] = useState(false);
     const [projects, setProjects] = useState<Project[]>([]);
+    const location = useLocation();
+    const navigate = useNavigate();
 
     const getProjects = useCallback(() => {
         console.log(typeof window);
@@ -22,6 +30,21 @@ const LeftDrawer: React.FC = () => {
         setProjects(projects);
         console.log("Projects:: ", projects);
     }, []);
+
+    const handleDeleteProject = useCallback(
+        (projectId) => {
+            electronAPI.deleteProject(projectId);
+            const currentProjectId: string = location.pathname.split("/")[1];
+
+            if (projectId === currentProjectId) {
+                navigate("/");
+            }
+
+            console.log("PATH: ", location.pathname.split("/")[1]);
+            getProjects();
+        },
+        [getProjects, location, navigate]
+    );
 
     useEffect(() => {
         if (effectRan.current === true) {
@@ -44,31 +67,48 @@ const LeftDrawer: React.FC = () => {
             <div className="px-5">
                 <SearchInput />
             </div>
-                <MyScrollArea>
-                    <ul className="list-none flex flex-col gap-3">
-                        {projects.map((project: Project) => (
-                            <li
-                                key={project._id}
-                                // className="p-2 rounded-md hover:bg-gray-200 transition cursor-pointer"
-                            >
+            <MyScrollArea>
+                <ul className="list-none flex flex-col gap-3">
+                    {projects.map((project: Project) => (
+                        <li
+                            key={project._id}
+                            className="p-2 rounded-md hover:bg-gray-200 transition cursor-pointer has-[.active-link]:bg-indigo-100 group/project"
+                        >
+                            <div className="flex items-center">
                                 <NavLink
                                     to={"/" + project._id}
                                     className={({ isActive, isPending }) =>
                                         [
                                             isActive
-                                                ? "text-indigo-700 bg-indigo-100"
+                                                ? "text-indigo-700 active-link"
                                                 : isPending
                                                 ? "text-gray-800"
                                                 : "",
-                                            "block p-2 rounded-md hover:bg-gray-200 transition cursor-pointer",
+                                            // "block p-2 rounded-md hover:bg-gray-200 transition cursor-pointer group/project",
+                                            "block flex-1",
                                         ].join(" ")
                                     }
                                 >
                                     {project.title}
                                 </NavLink>
-                            </li>
-                        ))}
-                    </ul>
+                                {/* <Space /> */}
+                                <button
+                                    className="p-1 group/btn invisible group-hover/project:visible hover:bg-indigo-300 hover:text-indigo-700 rounded-md"
+                                    onClick={() =>
+                                        handleDeleteProject(project._id)
+                                    }
+                                >
+                                    <Icon
+                                        icon="ic:baseline-delete-forever"
+                                        width={20}
+                                        height={20}
+                                        className="block text-slate-600"
+                                    />
+                                </button>
+                            </div>
+                        </li>
+                    ))}
+                </ul>
             </MyScrollArea>
             <div className="w-full text-center">
                 <Dialog.Root open={dialogState} onOpenChange={setDailogState}>

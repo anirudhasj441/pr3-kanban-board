@@ -18,7 +18,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProp> = (props) => {
     }, [props, title]);
 
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-3">
             <InputField
                 id="project-title"
                 label="Project Title"

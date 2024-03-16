@@ -81,6 +81,13 @@ class DbModel {
       );
       return task;
     });
+    __publicField(this, "getAllTasks", (projectId) => {
+      const project = this.db.projects.find(
+        (project2) => project2._id == projectId
+      );
+      const tasks = project == null ? void 0 : project.tasks;
+      return tasks;
+    });
     __publicField(this, "createProject", (title) => {
       const project = {
         _id: v4(),
@@ -89,8 +96,8 @@ class DbModel {
       };
       this.db.projects.push(project);
     });
-    __publicField(this, "createTask", (projectTitle, taskTitle, status) => {
-      const project = this.getProject(projectTitle);
+    __publicField(this, "createTask", (projectId, taskTitle, status) => {
+      const project = this.getProject(projectId);
       if (!project)
         return;
       const task = {
@@ -100,6 +107,28 @@ class DbModel {
         status
       };
       project == null ? void 0 : project.tasks.push(task);
+    });
+    __publicField(this, "deleteTask", (projectId, taskId) => {
+      const project = this.getProject(projectId);
+      const taskIndex = project == null ? void 0 : project.tasks.findIndex(
+        (task) => task._id == taskId
+      );
+      console.log("task index: ", taskIndex);
+      if (typeof taskIndex !== "undefined") {
+        project == null ? void 0 : project.tasks.splice(taskIndex, 1);
+      }
+    });
+    __publicField(this, "deleteProject", (projectId) => {
+      const project = this.getProject(projectId);
+      const projects = this.getAllProject();
+      if (project) {
+        const projectIndex = projects.indexOf(project);
+        projects.splice(projectIndex, 1);
+      }
+    });
+    __publicField(this, "projectExists", (projectId) => {
+      const project = this.getProject(projectId);
+      return project !== void 0;
     });
     this.dbFile = path.join(BASE_PATH, "db.json");
     console.log(fs.existsSync(this.dbFile));
@@ -168,9 +197,39 @@ app.whenReady().then(() => {
       dbModel.setJson();
     }
   );
+  ipcMain.on(
+    "createTask",
+    (event, projectId, taskTitle, status) => {
+      dbModel.createTask(projectId, taskTitle, status);
+      console.log("Creating Task!!");
+      dbModel.setJson();
+    }
+  );
   ipcMain.on("getProjects", (event) => {
     const projects = dbModel.getAllProject();
     event.sender.send("getProjects", projects);
+  });
+  ipcMain.on("getTasks", (event, projectId) => {
+    const tasks = dbModel.getAllTasks(projectId);
+    event.sender.send("getTasks", tasks);
+  });
+  ipcMain.on(
+    "deleteTask",
+    (event, projectId, taskId) => {
+      dbModel.deleteTask(projectId, taskId);
+      dbModel.setJson();
+    }
+  );
+  ipcMain.on(
+    "deleteProject",
+    (event, projectId) => {
+      dbModel.deleteProject(projectId);
+      dbModel.setJson();
+    }
+  );
+  ipcMain.on("projectExists", (event, projectId) => {
+    const result = dbModel.projectExists(projectId);
+    event.sender.send("projectExists", result);
   });
 });
 app.on("window-all-closed", () => {

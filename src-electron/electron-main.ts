@@ -2,7 +2,7 @@ import { app, BrowserWindow, ipcMain } from "electron";
 import path from "path";
 import { fileURLToPath } from "url";
 import DbModel from "./db";
-import { Project } from "../types";
+import { Project, Status } from "../types";
 
 console.log("path: ", path.dirname(fileURLToPath(import.meta.url)));
 const __filename: string = fileURLToPath(import.meta.url);
@@ -63,9 +63,44 @@ app.whenReady().then(() => {
             dbModel.setJson();
         }
     );
+    ipcMain.on(
+        "createTask",
+        (
+            event: Electron.IpcMainEvent,
+            projectId: string,
+            taskTitle: string,
+            status: Status
+        ) => {
+            dbModel.createTask(projectId, taskTitle, status);
+            console.log("Creating Task!!");
+            dbModel.setJson();
+        }
+    );
     ipcMain.on("getProjects", (event: Electron.IpcMainEvent) => {
         const projects: Project[] = dbModel.getAllProject();
         event.sender.send("getProjects", projects);
+    });
+    ipcMain.on("getTasks", (event: Electron.IpcMainEvent, projectId) => {
+        const tasks = dbModel.getAllTasks(projectId);
+        event.sender.send("getTasks", tasks);
+    });
+    ipcMain.on(
+        "deleteTask",
+        (event: Electron.IpcMainEvent, projectId: string, taskId: string) => {
+            dbModel.deleteTask(projectId, taskId);
+            dbModel.setJson();
+        }
+    );
+    ipcMain.on(
+        "deleteProject",
+        (event: Electron.IpcMainEvent, projectId: string) => {
+            dbModel.deleteProject(projectId);
+            dbModel.setJson();
+        }
+    );
+    ipcMain.on("projectExists", (event, projectId) => {
+        const result = dbModel.projectExists(projectId);
+        event.sender.send("projectExists", result);
     });
 });
 
