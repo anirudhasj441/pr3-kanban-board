@@ -23,6 +23,11 @@ const CreateProjectForm: React.FC<CreateProjectFormProp> = (props) => {
                 id="project-title"
                 label="Project Title"
                 onValueChange={(value) => setTitle(value)}
+                onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                        createProject();
+                    }
+                }}
             />
             <div className="text-right">
                 <Button
