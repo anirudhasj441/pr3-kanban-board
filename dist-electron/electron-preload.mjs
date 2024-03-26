@@ -31,6 +31,9 @@ electron.contextBridge.exposeInMainWorld("electronAPI", {
   projectExists: (projectId) => {
     electron.ipcRenderer.send("projectExists", projectId);
   },
+  updateTaskDesc: (projectId, taskId, desc) => {
+    electron.ipcRenderer.send("updateTaskDesc", projectId, taskId, desc);
+  },
   receive: (channel, func) => {
     electron.ipcRenderer.on(
       channel,

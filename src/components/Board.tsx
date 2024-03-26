@@ -5,6 +5,7 @@ import { Icon } from "@iconify-icon/react";
 import TaskCard from "./TaskCard";
 import MyScrollArea from "./ScrollArea";
 import CreateTaskForm from "./CreateTaskForm";
+import { EditorState } from "lexical";
 
 interface BoardProps {
     title: string;
@@ -51,6 +52,19 @@ const Board: React.FC<BoardProps> = (props: BoardProps) => {
         (taskId: string) => {
             console.log("task id: ", taskId);
             electronAPI.deleteTask(props.project_id, taskId);
+            getTasks();
+        },
+        [props, getTasks]
+    );
+
+    const handleOnUpdateTaskDesc = useCallback(
+        (taskId: string, editorState: EditorState) => {
+            console.log("Updated!!!");
+            electronAPI.updateTaskDesc(
+                props.project_id,
+                taskId,
+                JSON.stringify(editorState.toJSON())
+            );
             getTasks();
         },
         [props, getTasks]
@@ -116,6 +130,7 @@ const Board: React.FC<BoardProps> = (props: BoardProps) => {
                                 <TaskCard
                                     task={task}
                                     onDelete={handleOnDelete}
+                                    onUpdateDesc={handleOnUpdateTaskDesc}
                                 />
                             </li>
                         ))}

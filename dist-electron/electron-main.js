@@ -108,6 +108,12 @@ class DbModel {
       };
       project == null ? void 0 : project.tasks.push(task);
     });
+    __publicField(this, "updateTaskDesc", (projectId, taskId, desc) => {
+      const task = this.getTask(projectId, taskId);
+      if (!task)
+        return;
+      task.desc = desc;
+    });
     __publicField(this, "deleteTask", (projectId, taskId) => {
       const project = this.getProject(projectId);
       const taskIndex = project == null ? void 0 : project.tasks.findIndex(
@@ -231,6 +237,13 @@ app.whenReady().then(() => {
     const result = dbModel.projectExists(projectId);
     event.sender.send("projectExists", result);
   });
+  ipcMain.on(
+    "updateTaskDesc",
+    (event, projectId, taskId, desc) => {
+      dbModel.updateTaskDesc(projectId, taskId, desc);
+      dbModel.setJson();
+    }
+  );
 });
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin")

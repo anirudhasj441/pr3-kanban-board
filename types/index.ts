@@ -1,3 +1,6 @@
+import { ElementFormatType, TextFormatType } from "lexical";
+import React from "react";
+
 export interface Task {
     _id: string;
     task: string;
@@ -16,3 +19,15 @@ export interface DB {
 }
 
 export type Status = "todo" | "doing" | "done";
+
+export interface TextFormatButton {
+    id: number;
+    icon: React.ReactElement;
+    command: TextFormatType;
+}
+
+export interface ElementFormatButton {
+    id: number;
+    icon: React.ReactElement;
+    command: ElementFormatType;
+}

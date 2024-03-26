@@ -102,6 +102,18 @@ app.whenReady().then(() => {
         const result = dbModel.projectExists(projectId);
         event.sender.send("projectExists", result);
     });
+    ipcMain.on(
+        "updateTaskDesc",
+        (
+            event: Electron.IpcMainEvent,
+            projectId: string,
+            taskId: string,
+            desc: string
+        ) => {
+            dbModel.updateTaskDesc(projectId, taskId, desc);
+            dbModel.setJson();
+        }
+    );
 });
 
 app.on("window-all-closed", () => {

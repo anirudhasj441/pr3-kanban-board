@@ -5,12 +5,7 @@ import CreateProjectForm from "./CreateProjectForm";
 import { Button } from "@radix-ui/themes";
 import { Project } from "../../types";
 import * as Dialog from "@radix-ui/react-dialog";
-import {
-    NavLink,
-    NavigateFunction,
-    useLocation,
-    useNavigate,
-} from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import MyScrollArea from "./ScrollArea";
 import { Icon } from "@iconify-icon/react/dist/iconify.mjs";
 
@@ -32,7 +27,7 @@ const LeftDrawer: React.FC = () => {
     }, []);
 
     const handleDeleteProject = useCallback(
-        (projectId) => {
+        (projectId: string) => {
             electronAPI.deleteProject(projectId);
             const currentProjectId: string = location.pathname.split("/")[1];
 
