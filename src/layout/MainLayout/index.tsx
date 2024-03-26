@@ -1,7 +1,7 @@
 import React, { Suspense } from "react";
 import { Outlet } from "react-router-dom";
 import SplitterLayout from "react-splitter-layout";
-
+import LeftDrawerSkeleton from "../../skeletons/LeftDrawer";
 import WindowFrame from "../../components/WindowFrame";
 import "react-splitter-layout/lib/index.css";
 import "./style.scss";
@@ -22,7 +22,7 @@ const MainLayout: React.FC = () => {
                         secondaryMinSize={20}
                     >
                         <div className="h-full">
-                            <Suspense fallback={<p>Loading...</p>}>
+                            <Suspense fallback={<LeftDrawerSkeleton />}>
                                 <LeftDrawer></LeftDrawer>
                             </Suspense>
                         </div>
