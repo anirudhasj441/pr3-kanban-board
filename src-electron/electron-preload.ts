@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from "electron";
-import { Status } from "../types";
+import { Status, Task } from "../types";
 
 contextBridge.exposeInMainWorld("electronAPI", {
     close: (): void => {
@@ -34,6 +34,9 @@ contextBridge.exposeInMainWorld("electronAPI", {
     },
     updateTaskDesc: (projectId: string, taskId: string, desc: string) => {
         ipcRenderer.send("updateTaskDesc", projectId, taskId, desc);
+    },
+    updateAllTasks: (projectId: string, tasks: Task[]) => {
+        ipcRenderer.send("updateAllTasks", projectId, tasks);
     },
     receive: (channel: string, func: (...args: unknown[]) => void) => {
         ipcRenderer.on(

@@ -114,6 +114,12 @@ class DbModel {
         return;
       task.desc = desc;
     });
+    __publicField(this, "updateAllTasks", (projectId, tasks) => {
+      const project = this.getProject(projectId);
+      if (!project)
+        return;
+      project.tasks = tasks;
+    });
     __publicField(this, "deleteTask", (projectId, taskId) => {
       const project = this.getProject(projectId);
       const taskIndex = project == null ? void 0 : project.tasks.findIndex(
@@ -241,6 +247,13 @@ app.whenReady().then(() => {
     "updateTaskDesc",
     (event, projectId, taskId, desc) => {
       dbModel.updateTaskDesc(projectId, taskId, desc);
+      dbModel.setJson();
+    }
+  );
+  ipcMain.on(
+    "updateAllTasks",
+    (event, projectId, tasks) => {
+      dbModel.updateAllTasks(projectId, tasks);
       dbModel.setJson();
     }
   );

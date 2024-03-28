@@ -1,8 +1,8 @@
-import { app, BrowserWindow, ipcMain } from "electron";
+import { app, BrowserWindow, ipcMain, IpcMainEvent } from "electron";
 import path from "path";
 import { fileURLToPath } from "url";
 import DbModel from "./db";
-import { Project, Status } from "../types";
+import { Project, Status, Task } from "../types";
 
 console.log("path: ", path.dirname(fileURLToPath(import.meta.url)));
 const __filename: string = fileURLToPath(import.meta.url);
@@ -111,6 +111,13 @@ app.whenReady().then(() => {
             desc: string
         ) => {
             dbModel.updateTaskDesc(projectId, taskId, desc);
+            dbModel.setJson();
+        }
+    );
+    ipcMain.on(
+        "updateAllTasks",
+        (event: IpcMainEvent, projectId: string, tasks: Task[]) => {
+            dbModel.updateAllTasks(projectId, tasks);
             dbModel.setJson();
         }
     );

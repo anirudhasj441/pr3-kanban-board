@@ -6,6 +6,12 @@ import TaskCard from "./TaskCard";
 import MyScrollArea from "./ScrollArea";
 import CreateTaskForm from "./CreateTaskForm";
 import { EditorState } from "lexical";
+import { DndContext, DragEndEvent } from "@dnd-kit/core";
+import {
+    SortableContext,
+    arrayMove,
+    verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 
 interface BoardProps {
     title: string;
@@ -58,12 +64,12 @@ const Board: React.FC<BoardProps> = (props: BoardProps) => {
     );
 
     const handleOnUpdateTaskDesc = useCallback(
-        (taskId: string, editorState: EditorState) => {
+        (taskId: string, editorState: EditorState | undefined) => {
             console.log("Updated!!!");
             electronAPI.updateTaskDesc(
                 props.project_id,
                 taskId,
-                JSON.stringify(editorState.toJSON())
+                JSON.stringify(editorState?.toJSON())
             );
             getTasks();
         },
@@ -85,6 +91,32 @@ const Board: React.FC<BoardProps> = (props: BoardProps) => {
             document.getElementById("task-form")?.focus();
         }
     }, [showForm]);
+
+    const handleDragEnd = useCallback(
+        async (event: DragEndEvent) => {
+            const { active, over } = event;
+
+            const activeTask: Task | undefined = tasks.find(
+                (task: Task) => task._id === active.id
+            );
+            const overTask: Task | undefined = tasks.find(
+                (task: Task) => task._id === over?.id
+            );
+
+            if (!activeTask || !overTask) return;
+
+            const tempTasks = arrayMove(
+                tasks,
+                tasks.indexOf(activeTask),
+                tasks.indexOf(overTask)
+            );
+
+            console.log("new tasks: ", tempTasks);
+            setTasks(tempTasks);
+            electronAPI.updateAllTasks(props.project_id, tempTasks);
+        },
+        [tasks, setTasks]
+    );
 
     return (
         <div className="flex flex-col h-full flex-1 gap-5">
@@ -125,15 +157,23 @@ const Board: React.FC<BoardProps> = (props: BoardProps) => {
             <div className="board group flex-1 overflow-hidden">
                 <MyScrollArea className="rounded-md h-full">
                     <ul className="flex flex-col gap-2">
-                        {tasks.map((task: Task) => (
-                            <li key={task._id}>
-                                <TaskCard
-                                    task={task}
-                                    onDelete={handleOnDelete}
-                                    onUpdateDesc={handleOnUpdateTaskDesc}
-                                />
-                            </li>
-                        ))}
+                        <DndContext onDragEnd={handleDragEnd}>
+                            <SortableContext
+                                items={tasks.map((task: Task) => task._id)}
+                                strategy={verticalListSortingStrategy}
+                            >
+                                {tasks.map((task: Task) => (
+                                    <TaskCard
+                                        key={task._id}
+                                        task={task}
+                                        onDelete={handleOnDelete}
+                                        onUpdateDesc={handleOnUpdateTaskDesc}
+                                    />
+                                    // <li key={task._id}>
+                                    // </li>
+                                ))}
+                            </SortableContext>
+                        </DndContext>
                         {showForm ? (
                             <li
                                 id="task-form"
