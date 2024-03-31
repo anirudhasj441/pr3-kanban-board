@@ -65,25 +65,12 @@ const TaskCard: React.FC<TaskCardProps> = (props: TaskCardProps) => {
             {...attributes}
             {...listeners}
             className={[
-                "bg-white px-3 py-2 rounded-md shadow-md flex items-center group/task task-card cursor-grab",
+                "bg-white px-3 py-2 rounded-md shadow-md flex items-start group/task task-card cursor-grab",
                 props.grabbed ? "cursor-grabbing" : "",
             ].join(" ")}
         >
             <div className="text-sm">{props.task.task}</div>
             <Space />
-            <button
-                className="hover:bg-gray-300 p-1 rounded-md invisible group-hover/task:visible transition duration-800 ease-in-out"
-                onClick={() =>
-                    props.onDelete ? props.onDelete(props.task._id) : undefined
-                }
-            >
-                <Icon
-                    icon="ic:baseline-delete-forever"
-                    width={20}
-                    height={20}
-                    className="block text-slate-600"
-                />
-            </button>
             <Dialog.Root
                 open={taskDialogState}
                 onOpenChange={setTaskDialogState}
@@ -108,6 +95,21 @@ const TaskCard: React.FC<TaskCardProps> = (props: TaskCardProps) => {
                             {props.task.task}
                         </div>
                         <Space></Space>
+                        <button
+                            className="hover:bg-gray-300 p-1 rounded-md invisible group-hover/task:visible transition duration-800 ease-in-out"
+                            onClick={() =>
+                                props.onDelete
+                                    ? props.onDelete(props.task._id)
+                                    : undefined
+                            }
+                        >
+                            <Icon
+                                icon="ic:baseline-delete-forever"
+                                width={25}
+                                height={25}
+                                className="block text-slate-600"
+                            />
+                        </button>
                         <button
                             className="hover:bg-gray-300 p-1 rounded-md transition duration-800 ease-in-out"
                             onClick={() => setTaskDialogState(false)}
