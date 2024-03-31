@@ -8,8 +8,10 @@ interface ScrollAreaProps {
 
 const MyScrollArea: React.FC<ScrollAreaProps> = (props: ScrollAreaProps) => {
     return (
-        <ScrollArea.Root className="h-full overflow-hidden">
-            <ScrollArea.Viewport className={props.className + " h-full"}>
+        <ScrollArea.Root className="h-full overflow-auto">
+            <ScrollArea.Viewport
+                className={[props.className, "h-full"].join(" ")}
+            >
                 {props.children}
             </ScrollArea.Viewport>
             <ScrollArea.Scrollbar

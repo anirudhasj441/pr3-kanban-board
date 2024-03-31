@@ -7,7 +7,7 @@ import { EditorState } from "lexical";
 
 interface TaskDetailProps {
     task: Task;
-    onUpdateDesc: (editorState: EditorState | undefined) => void;
+    onUpdateDesc?: (editorState: EditorState | undefined) => void;
 }
 
 const TaskDetail: React.FC<TaskDetailProps> = (props: TaskDetailProps) => {
@@ -15,7 +15,7 @@ const TaskDetail: React.FC<TaskDetailProps> = (props: TaskDetailProps) => {
 
     const onSave = useCallback(
         (editorState: EditorState | undefined) => {
-            props.onUpdateDesc(editorState);
+            props.onUpdateDesc && props.onUpdateDesc(editorState);
         },
         [props]
     );

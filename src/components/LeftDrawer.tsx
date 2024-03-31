@@ -62,7 +62,7 @@ const LeftDrawer: React.FC = () => {
             <div className="px-5">
                 <SearchInput />
             </div>
-            <MyScrollArea>
+            <MyScrollArea className="px-5 py-3">
                 <ul className="list-none flex flex-col gap-3">
                     {projects.map((project: Project) => (
                         <li
@@ -105,6 +105,8 @@ const LeftDrawer: React.FC = () => {
                     ))}
                 </ul>
             </MyScrollArea>
+            {/* <div className="flex-grow overflow-hidden">
+            </div> */}
             <div className="w-full text-center">
                 <Dialog.Root open={dialogState} onOpenChange={setDailogState}>
                     <Dialog.Trigger asChild>

@@ -6,17 +6,18 @@ import TaskCard from "./TaskCard";
 import MyScrollArea from "./ScrollArea";
 import CreateTaskForm from "./CreateTaskForm";
 import { EditorState } from "lexical";
-import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import {
     SortableContext,
-    arrayMove,
     verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import { useDroppable } from "@dnd-kit/core";
 
 interface BoardProps {
     title: string;
     project_id: string;
     status: Status;
+    tasks: Task[];
+    getTasks: () => void;
     color_class?: string | undefined;
 }
 
@@ -25,42 +26,24 @@ const Board: React.FC<BoardProps> = (props: BoardProps) => {
 
     const [showForm, setShowForm] = useState<boolean>(false);
 
-    const [tasks, setTasks] = useState<Task[]>([]);
-
-    const getTasks = useCallback(() => {
-        console.log("Tasks fetchning ");
-        if (typeof window !== "undefined")
-            electronAPI.getTasks(props.project_id);
-    }, [props.project_id]);
-
     const createTask = useCallback(
         (taskTitle: string) => {
             console.log("CREATING TASK!!!");
             if (taskTitle === "") return;
             electronAPI.createTask(props.project_id, taskTitle, props.status);
             setShowForm(false);
-            getTasks();
+            props.getTasks();
         },
-        [props, setShowForm, getTasks]
-    );
-
-    const handleGetTasks = useCallback(
-        (tasks: Task[]) => {
-            const taskList = tasks.filter(
-                (task: Task) => task.status == props.status
-            );
-            setTasks(taskList);
-        },
-        [setTasks, props.status]
+        [props, setShowForm]
     );
 
     const handleOnDelete = useCallback(
         (taskId: string) => {
             console.log("task id: ", taskId);
             electronAPI.deleteTask(props.project_id, taskId);
-            getTasks();
+            props.getTasks();
         },
-        [props, getTasks]
+        [props]
     );
 
     const handleOnUpdateTaskDesc = useCallback(
@@ -71,52 +54,33 @@ const Board: React.FC<BoardProps> = (props: BoardProps) => {
                 taskId,
                 JSON.stringify(editorState?.toJSON())
             );
-            getTasks();
+            props.getTasks();
         },
-        [props, getTasks]
+        [props]
     );
 
+    const { setNodeRef } = useDroppable({
+        id: props.status,
+        data: {
+            type: "BOARD",
+            status: props.status,
+        },
+    });
+
     useEffect(() => {
-        if (effectRan.current) {
-            getTasks();
-            electronAPI.receive("getTasks", handleGetTasks);
-        }
+        // if (effectRan.current) {
+
+        // }
         return () => {
             effectRan.current = true;
         };
-    }, [getTasks, handleGetTasks]);
+    }, []);
 
     useEffect(() => {
         if (showForm) {
             document.getElementById("task-form")?.focus();
         }
     }, [showForm]);
-
-    const handleDragEnd = useCallback(
-        async (event: DragEndEvent) => {
-            const { active, over } = event;
-
-            const activeTask: Task | undefined = tasks.find(
-                (task: Task) => task._id === active.id
-            );
-            const overTask: Task | undefined = tasks.find(
-                (task: Task) => task._id === over?.id
-            );
-
-            if (!activeTask || !overTask) return;
-
-            const tempTasks = arrayMove(
-                tasks,
-                tasks.indexOf(activeTask),
-                tasks.indexOf(overTask)
-            );
-
-            console.log("new tasks: ", tempTasks);
-            setTasks(tempTasks);
-            electronAPI.updateAllTasks(props.project_id, tempTasks);
-        },
-        [tasks, setTasks]
-    );
 
     return (
         <div className="flex flex-col h-full flex-1 gap-5">
@@ -139,7 +103,7 @@ const Board: React.FC<BoardProps> = (props: BoardProps) => {
             >
                 <h6 className="">{props.title}</h6>
                 <div className="badge px-2 py-0  rounded-xl border-[1px] border-slate-300">
-                    {tasks.length}
+                    {props.tasks.length}
                 </div>
                 <Space />
                 <button
@@ -154,39 +118,34 @@ const Board: React.FC<BoardProps> = (props: BoardProps) => {
                     />
                 </button>
             </div>
-            <div className="board group flex-1 overflow-hidden">
-                <MyScrollArea className="rounded-md h-full">
-                    <ul className="flex flex-col gap-2">
-                        <DndContext onDragEnd={handleDragEnd}>
-                            <SortableContext
-                                items={tasks.map((task: Task) => task._id)}
-                                strategy={verticalListSortingStrategy}
-                            >
-                                {tasks.map((task: Task) => (
-                                    <TaskCard
-                                        key={task._id}
-                                        task={task}
-                                        onDelete={handleOnDelete}
-                                        onUpdateDesc={handleOnUpdateTaskDesc}
-                                    />
-                                    // <li key={task._id}>
-                                    // </li>
-                                ))}
-                            </SortableContext>
-                        </DndContext>
-                        {showForm ? (
-                            <li
-                                id="task-form"
-                                onBlur={() => {
-                                    setShowForm(false);
-                                }}
-                            >
-                                <CreateTaskForm onCreate={createTask} />
-                            </li>
-                        ) : null}
-                        <li>
-                            <button
-                                className="
+            <MyScrollArea className="rounded-md board group flex-grow">
+                <div className="flex flex-col gap-2 h-full" ref={setNodeRef}>
+                    <SortableContext
+                        items={props.tasks.map((task: Task) => task._id)}
+                        strategy={verticalListSortingStrategy}
+                    >
+                        {props.tasks.map((task: Task) => (
+                            <TaskCard
+                                key={task._id}
+                                task={task}
+                                onDelete={handleOnDelete}
+                                onUpdateDesc={handleOnUpdateTaskDesc}
+                            />
+                        ))}
+                    </SortableContext>
+                    {showForm ? (
+                        <div
+                            id="task-form"
+                            onBlur={() => {
+                                setShowForm(false);
+                            }}
+                        >
+                            <CreateTaskForm onCreate={createTask} />
+                        </div>
+                    ) : null}
+                    <div>
+                        <button
+                            className="
                                     text-sm
                                     text-slate-600
                                     opacity-0
@@ -201,18 +160,17 @@ const Board: React.FC<BoardProps> = (props: BoardProps) => {
                                     gap-1
                                     items-center
                                 "
-                                onClick={() => setShowForm(true)}
-                            >
-                                <Icon
-                                    icon="material-symbols:add"
-                                    className="block"
-                                />
-                                <div>New Task</div>
-                            </button>
-                        </li>
-                    </ul>
-                </MyScrollArea>
-            </div>
+                            onClick={() => setShowForm(true)}
+                        >
+                            <Icon
+                                icon="material-symbols:add"
+                                className="block"
+                            />
+                            <div>New Task</div>
+                        </button>
+                    </div>
+                </div>
+            </MyScrollArea>
         </div>
     );
 };
