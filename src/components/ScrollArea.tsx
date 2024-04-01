@@ -10,7 +10,7 @@ const MyScrollArea: React.FC<ScrollAreaProps> = (props: ScrollAreaProps) => {
     return (
         <ScrollArea.Root className="h-full overflow-auto">
             <ScrollArea.Viewport
-                className={[props.className, "h-full"].join(" ")}
+                className={[props.className, "h-full w-full"].join(" ")}
             >
                 {props.children}
             </ScrollArea.Viewport>
@@ -25,7 +25,7 @@ const MyScrollArea: React.FC<ScrollAreaProps> = (props: ScrollAreaProps) => {
 };
 
 MyScrollArea.defaultProps = {
-    className: "h-full w-full px-5",
+    className: "",
 };
 
 export default MyScrollArea;

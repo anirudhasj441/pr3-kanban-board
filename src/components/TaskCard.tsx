@@ -8,6 +8,7 @@ import Seperator from "./Seperator";
 import { EditorState } from "lexical";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import MyScrollArea from "./ScrollArea";
 
 interface TaskCardProps {
     task: Task;
@@ -35,6 +36,7 @@ const TaskCard: React.FC<TaskCardProps> = (props: TaskCardProps) => {
             type: "TASK",
             task: props.task,
         },
+        disabled: taskDialogState,
     });
 
     const style = {
@@ -89,47 +91,54 @@ const TaskCard: React.FC<TaskCardProps> = (props: TaskCardProps) => {
                     className="fixed backdrop-blur-sm transition-all duration-900 ease-linear z-10"
                     style={{ inset: 0 }}
                 />
-                <Dialog.Content className="fixed top-10 left-1/2 -translate-x-1/2 bg-gray-100 p-4 z-20 rounded-md w-[80%] shadow-lg">
-                    <Dialog.Title className="flex">
-                        <div className="text-2xl text-slate-600">
-                            {props.task.task}
+                <Dialog.Content className="fixed top-10 left-1/2 -translate-x-1/2 bg-gray-100 py-4 z-20 rounded-md w-[80%] h-[90svh] shadow-lg cursor-auto flex flex-col">
+                    <MyScrollArea className="px-4">
+                        <Dialog.Title className="flex">
+                            <div className="text-2xl text-slate-600">
+                                {props.task.task}
+                            </div>
+                            <Space></Space>
+                            <button
+                                className="hover:bg-gray-300 p-1 rounded-md invisible group-hover/task:visible transition duration-800 ease-in-out"
+                                onClick={() =>
+                                    props.onDelete
+                                        ? props.onDelete(props.task._id)
+                                        : undefined
+                                }
+                            >
+                                <Icon
+                                    icon="ic:baseline-delete-forever"
+                                    width={25}
+                                    height={25}
+                                    className="block text-slate-600"
+                                />
+                            </button>
+                            <button
+                                className="hover:bg-gray-300 p-1 rounded-md transition duration-800 ease-in-out"
+                                onClick={() => setTaskDialogState(false)}
+                            >
+                                <Icon
+                                    icon="material-symbols:close"
+                                    width={25}
+                                    height={25}
+                                    className="block text-slate-600"
+                                />
+                            </button>
+                        </Dialog.Title>
+                        <Seperator />
+                        <div className="flex-grow">
+                            <TaskDetail
+                                task={props.task}
+                                onUpdateDesc={(editorState) =>
+                                    props.onUpdateDesc &&
+                                    props.onUpdateDesc(
+                                        props.task._id,
+                                        editorState
+                                    )
+                                }
+                            />
                         </div>
-                        <Space></Space>
-                        <button
-                            className="hover:bg-gray-300 p-1 rounded-md invisible group-hover/task:visible transition duration-800 ease-in-out"
-                            onClick={() =>
-                                props.onDelete
-                                    ? props.onDelete(props.task._id)
-                                    : undefined
-                            }
-                        >
-                            <Icon
-                                icon="ic:baseline-delete-forever"
-                                width={25}
-                                height={25}
-                                className="block text-slate-600"
-                            />
-                        </button>
-                        <button
-                            className="hover:bg-gray-300 p-1 rounded-md transition duration-800 ease-in-out"
-                            onClick={() => setTaskDialogState(false)}
-                        >
-                            <Icon
-                                icon="material-symbols:close"
-                                width={25}
-                                height={25}
-                                className="block text-slate-600"
-                            />
-                        </button>
-                    </Dialog.Title>
-                    <Seperator />
-                    <TaskDetail
-                        task={props.task}
-                        onUpdateDesc={(editorState) =>
-                            props.onUpdateDesc &&
-                            props.onUpdateDesc(props.task._id, editorState)
-                        }
-                    />
+                    </MyScrollArea>
                 </Dialog.Content>
             </Dialog.Root>
         </div>

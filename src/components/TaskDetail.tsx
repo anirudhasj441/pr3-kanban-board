@@ -21,7 +21,7 @@ const TaskDetail: React.FC<TaskDetailProps> = (props: TaskDetailProps) => {
     );
 
     return (
-        <div className="pt-3">
+        <div className="pt-3 h-full flex flex-col">
             <div className="flex mb-2">
                 <Space />
                 <button
@@ -42,13 +42,15 @@ const TaskDetail: React.FC<TaskDetailProps> = (props: TaskDetailProps) => {
                     />
                 </button>
             </div>
-            <Editor
-                id={props.task._id}
-                task={props.task}
-                onClose={() => setEditMode(false)}
-                onSave={(editorState) => onSave(editorState)}
-                editMode={editMode}
-            />
+            <div className="flex-grow">
+                <Editor
+                    id={props.task._id}
+                    task={props.task}
+                    onClose={() => setEditMode(false)}
+                    onSave={(editorState) => onSave(editorState)}
+                    editMode={editMode}
+                />
+            </div>
         </div>
     );
 };
