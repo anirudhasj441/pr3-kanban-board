@@ -1,280 +1,197 @@
-var __defProp = Object.defineProperty;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField = (obj, key, value) => {
-  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
+var m = Object.defineProperty;
+var T = (s, e, t) => e in s ? m(s, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : s[e] = t;
+var r = (s, e, t) => (T(s, typeof e != "symbol" ? e + "" : e, t), t);
+import { app as g, ipcMain as d, BrowserWindow as x } from "electron";
+import p from "path";
+import { fileURLToPath as j } from "url";
+import l from "fs";
+let u;
+const b = new Uint8Array(16);
+function y() {
+  if (!u && (u = typeof crypto < "u" && crypto.getRandomValues && crypto.getRandomValues.bind(crypto), !u))
+    throw new Error("crypto.getRandomValues() not supported. See https://github.com/uuidjs/uuid#getrandomvalues-not-supported");
+  return u(b);
+}
+const c = [];
+for (let s = 0; s < 256; ++s)
+  c.push((s + 256).toString(16).slice(1));
+function P(s, e = 0) {
+  return c[s[e + 0]] + c[s[e + 1]] + c[s[e + 2]] + c[s[e + 3]] + "-" + c[s[e + 4]] + c[s[e + 5]] + "-" + c[s[e + 6]] + c[s[e + 7]] + "-" + c[s[e + 8]] + c[s[e + 9]] + "-" + c[s[e + 10]] + c[s[e + 11]] + c[s[e + 12]] + c[s[e + 13]] + c[s[e + 14]] + c[s[e + 15]];
+}
+const _ = typeof crypto < "u" && crypto.randomUUID && crypto.randomUUID.bind(crypto), k = {
+  randomUUID: _
 };
-import { app, ipcMain, BrowserWindow } from "electron";
-import path from "path";
-import { fileURLToPath } from "url";
-import fs from "fs";
-let getRandomValues;
-const rnds8 = new Uint8Array(16);
-function rng() {
-  if (!getRandomValues) {
-    getRandomValues = typeof crypto !== "undefined" && crypto.getRandomValues && crypto.getRandomValues.bind(crypto);
-    if (!getRandomValues) {
-      throw new Error("crypto.getRandomValues() not supported. See https://github.com/uuidjs/uuid#getrandomvalues-not-supported");
-    }
+function h(s, e, t) {
+  if (k.randomUUID && !e && !s)
+    return k.randomUUID();
+  s = s || {};
+  const n = s.random || (s.rng || y)();
+  if (n[6] = n[6] & 15 | 64, n[8] = n[8] & 63 | 128, e) {
+    t = t || 0;
+    for (let o = 0; o < 16; ++o)
+      e[t + o] = n[o];
+    return e;
   }
-  return getRandomValues(rnds8);
+  return P(n);
 }
-const byteToHex = [];
-for (let i = 0; i < 256; ++i) {
-  byteToHex.push((i + 256).toString(16).slice(1));
-}
-function unsafeStringify(arr, offset = 0) {
-  return byteToHex[arr[offset + 0]] + byteToHex[arr[offset + 1]] + byteToHex[arr[offset + 2]] + byteToHex[arr[offset + 3]] + "-" + byteToHex[arr[offset + 4]] + byteToHex[arr[offset + 5]] + "-" + byteToHex[arr[offset + 6]] + byteToHex[arr[offset + 7]] + "-" + byteToHex[arr[offset + 8]] + byteToHex[arr[offset + 9]] + "-" + byteToHex[arr[offset + 10]] + byteToHex[arr[offset + 11]] + byteToHex[arr[offset + 12]] + byteToHex[arr[offset + 13]] + byteToHex[arr[offset + 14]] + byteToHex[arr[offset + 15]];
-}
-const randomUUID = typeof crypto !== "undefined" && crypto.randomUUID && crypto.randomUUID.bind(crypto);
-const native = {
-  randomUUID
-};
-function v4(options, buf, offset) {
-  if (native.randomUUID && !buf && !options) {
-    return native.randomUUID();
-  }
-  options = options || {};
-  const rnds = options.random || (options.rng || rng)();
-  rnds[6] = rnds[6] & 15 | 64;
-  rnds[8] = rnds[8] & 63 | 128;
-  if (buf) {
-    offset = offset || 0;
-    for (let i = 0; i < 16; ++i) {
-      buf[offset + i] = rnds[i];
-    }
-    return buf;
-  }
-  return unsafeStringify(rnds);
-}
-class DbModel {
+class v {
   constructor() {
-    __publicField(this, "dbFile");
-    __publicField(this, "db");
-    __publicField(this, "setJson", () => {
-      if (!fs.existsSync(this.dbFile)) {
-        fs.mkdirSync(path.dirname(this.dbFile), { recursive: true });
-      }
-      fs.writeFileSync(this.dbFile, JSON.stringify(this.db));
+    r(this, "dbFile");
+    r(this, "db");
+    r(this, "setJson", () => {
+      l.existsSync(this.dbFile) || l.mkdirSync(p.dirname(this.dbFile), { recursive: !0 }), l.writeFileSync(this.dbFile, JSON.stringify(this.db));
     });
-    __publicField(this, "getJson", () => {
-      const fileData = fs.readFileSync(this.dbFile, "utf-8");
-      const data = JSON.parse(fileData);
-      return data;
+    r(this, "getJson", () => {
+      const e = l.readFileSync(this.dbFile, "utf-8");
+      return JSON.parse(e);
     });
-    __publicField(this, "getProject", (projectId) => {
-      const project = this.db.projects.find(
-        (project2) => project2._id == projectId
+    r(this, "getProject", (e) => this.db.projects.find(
+      (n) => n._id == e
+    ));
+    r(this, "getAllProject", () => this.db.projects);
+    r(this, "getTask", (e, t) => {
+      const n = this.db.projects.find(
+        (a) => a._id == e
       );
-      return project;
-    });
-    __publicField(this, "getAllProject", () => {
-      const projects = this.db.projects;
-      return projects;
-    });
-    __publicField(this, "getTask", (projectId, taskId) => {
-      const project = this.db.projects.find(
-        (project2) => project2._id == projectId
+      return n == null ? void 0 : n.tasks.find(
+        (a) => a._id == t
       );
-      const task = project == null ? void 0 : project.tasks.find(
-        (task2) => task2._id == taskId
-      );
-      return task;
     });
-    __publicField(this, "getAllTasks", (projectId) => {
-      const project = this.db.projects.find(
-        (project2) => project2._id == projectId
+    r(this, "getAllTasks", (e) => {
+      const t = this.db.projects.find(
+        (o) => o._id == e
       );
-      const tasks = project == null ? void 0 : project.tasks;
-      return tasks;
+      return t == null ? void 0 : t.tasks;
     });
-    __publicField(this, "createProject", (title) => {
-      const project = {
-        _id: v4(),
-        title,
+    r(this, "createProject", (e) => {
+      const t = {
+        _id: h(),
+        title: e,
         tasks: []
       };
-      this.db.projects.push(project);
+      this.db.projects.push(t);
     });
-    __publicField(this, "createTask", (projectId, taskTitle, status) => {
-      const project = this.getProject(projectId);
-      if (!project)
+    r(this, "createTask", (e, t, n) => {
+      const o = this.getProject(e);
+      if (!o)
         return;
-      const task = {
-        _id: v4(),
-        task: taskTitle,
+      const a = {
+        _id: h(),
+        task: t,
         desc: "",
-        status
+        status: n
       };
-      project == null ? void 0 : project.tasks.push(task);
+      o == null || o.tasks.push(a);
     });
-    __publicField(this, "updateTaskDesc", (projectId, taskId, desc) => {
-      const task = this.getTask(projectId, taskId);
-      if (!task)
-        return;
-      task.desc = desc;
+    r(this, "updateTaskDesc", (e, t, n) => {
+      const o = this.getTask(e, t);
+      o && (o.desc = n);
     });
-    __publicField(this, "updateTaskName", (projectId, taskId, taskName) => {
-      const task = this.getTask(projectId, taskId);
-      if (!task)
-        return;
-      task.task = taskName;
+    r(this, "updateTaskName", (e, t, n) => {
+      const o = this.getTask(e, t);
+      o && (o.task = n);
     });
-    __publicField(this, "updateAllTasks", (projectId, tasks) => {
-      const project = this.getProject(projectId);
-      if (!project)
-        return;
-      project.tasks = tasks;
+    r(this, "updateAllTasks", (e, t) => {
+      const n = this.getProject(e);
+      n && (n.tasks = t);
     });
-    __publicField(this, "deleteTask", (projectId, taskId) => {
-      const project = this.getProject(projectId);
-      const taskIndex = project == null ? void 0 : project.tasks.findIndex(
-        (task) => task._id == taskId
+    r(this, "deleteTask", (e, t) => {
+      const n = this.getProject(e), o = n == null ? void 0 : n.tasks.findIndex(
+        (a) => a._id == t
       );
-      console.log("task index: ", taskIndex);
-      if (typeof taskIndex !== "undefined") {
-        project == null ? void 0 : project.tasks.splice(taskIndex, 1);
+      console.log("task index: ", o), typeof o < "u" && (n == null || n.tasks.splice(o, 1));
+    });
+    r(this, "deleteProject", (e) => {
+      const t = this.getProject(e), n = this.getAllProject();
+      if (t) {
+        const o = n.indexOf(t);
+        n.splice(o, 1);
       }
     });
-    __publicField(this, "deleteProject", (projectId) => {
-      const project = this.getProject(projectId);
-      const projects = this.getAllProject();
-      if (project) {
-        const projectIndex = projects.indexOf(project);
-        projects.splice(projectIndex, 1);
-      }
-    });
-    __publicField(this, "projectExists", (projectId) => {
-      const project = this.getProject(projectId);
-      return project !== void 0;
-    });
-    this.dbFile = path.join(BASE_PATH, "db.json");
-    console.log(fs.existsSync(this.dbFile));
-    if (!fs.existsSync(this.dbFile)) {
-      this.db = {
-        projects: []
-      };
-      this.setJson();
-    } else {
-      console.log("file exits: ", fs.existsSync(this.dbFile));
-      this.db = this.getJson();
-    }
+    r(this, "projectExists", (e) => this.getProject(e) !== void 0);
+    this.dbFile = p.join(f, "db.json"), console.log(l.existsSync(this.dbFile)), l.existsSync(this.dbFile) ? (console.log("file exits: ", l.existsSync(this.dbFile)), this.db = this.getJson()) : (this.db = {
+      projects: []
+    }, this.setJson());
   }
 }
-console.log("path: ", path.dirname(fileURLToPath(import.meta.url)));
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const BASE_PATH = path.join(
-  app.getPath("userData"),
+console.log("path: ", p.dirname(j(import.meta.url)));
+const S = j(import.meta.url), U = p.dirname(S), f = p.join(
+  g.getPath("userData"),
   "kanban_board"
 );
-let mainWindow;
-const createWindow = () => {
-  mainWindow = new BrowserWindow({
+let i;
+const D = () => {
+  i = new x({
     width: 1e3,
     height: 600,
-    useContentSize: true,
-    frame: false,
+    useContentSize: !0,
+    frame: !1,
     webPreferences: {
-      preload: path.join(__dirname, "electron-preload.mjs"),
-      devTools: true,
-      contextIsolation: true,
-      nodeIntegration: true
+      preload: p.join(U, "electron-preload.mjs"),
+      devTools: !0,
+      contextIsolation: !0,
+      nodeIntegration: !0
     }
-  });
-  mainWindow.webContents.openDevTools();
-  mainWindow.setMenu(null);
-  if (process.env.VITE_DEV_SERVER_URL) {
-    mainWindow.loadURL(process.env.VITE_DEV_SERVER_URL);
-  } else {
-    mainWindow.loadFile("dist/index.html");
-  }
+  }), i.setMenu(null), process.env.VITE_DEV_SERVER_URL ? (i.webContents.openDevTools(), i.loadURL(process.env.VITE_DEV_SERVER_URL)) : i.loadFile("../dist/react/index.html");
 };
-app.whenReady().then(() => {
-  createWindow();
-  const dbModel = new DbModel();
-  ipcMain.on("close", () => {
-    mainWindow == null ? void 0 : mainWindow.close();
-  });
-  ipcMain.on("minimize", () => {
-    mainWindow == null ? void 0 : mainWindow.minimize();
-  });
-  ipcMain.on("maximize", () => {
-    console.log("Maximizing: ");
-    if (mainWindow == null ? void 0 : mainWindow.isMaximized()) {
-      mainWindow == null ? void 0 : mainWindow.unmaximize();
-    } else {
-      mainWindow == null ? void 0 : mainWindow.maximize();
-    }
-  });
-  ipcMain.on(
+g.whenReady().then(() => {
+  D();
+  const s = new v();
+  d.on("close", () => {
+    i == null || i.close();
+  }), d.on("minimize", () => {
+    i == null || i.minimize();
+  }), d.on("maximize", () => {
+    console.log("Maximizing: "), i != null && i.isMaximized() ? i == null || i.unmaximize() : i == null || i.maximize();
+  }), d.on(
     "createProject",
-    (evt, projectTitle) => {
-      dbModel.createProject(projectTitle);
-      console.log("Creating Project ");
-      dbModel.setJson();
+    (e, t) => {
+      s.createProject(t), console.log("Creating Project "), s.setJson();
     }
-  );
-  ipcMain.on(
+  ), d.on(
     "createTask",
-    (event, projectId, taskTitle, status) => {
-      dbModel.createTask(projectId, taskTitle, status);
-      console.log("Creating Task!!");
-      dbModel.setJson();
+    (e, t, n, o) => {
+      s.createTask(t, n, o), console.log("Creating Task!!"), s.setJson();
     }
-  );
-  ipcMain.on("getProjects", (event) => {
-    const projects = dbModel.getAllProject();
-    event.sender.send("getProjects", projects);
-  });
-  ipcMain.on("getTasks", (event, projectId) => {
-    const tasks = dbModel.getAllTasks(projectId);
-    event.sender.send("getTasks", tasks);
-  });
-  ipcMain.on(
+  ), d.on("getProjects", (e) => {
+    const t = s.getAllProject();
+    e.sender.send("getProjects", t);
+  }), d.on("getTasks", (e, t) => {
+    const n = s.getAllTasks(t);
+    e.sender.send("getTasks", n);
+  }), d.on(
     "deleteTask",
-    (event, projectId, taskId) => {
-      dbModel.deleteTask(projectId, taskId);
-      dbModel.setJson();
+    (e, t, n) => {
+      s.deleteTask(t, n), s.setJson();
     }
-  );
-  ipcMain.on(
+  ), d.on(
     "deleteProject",
-    (event, projectId) => {
-      dbModel.deleteProject(projectId);
-      dbModel.setJson();
+    (e, t) => {
+      s.deleteProject(t), s.setJson();
     }
-  );
-  ipcMain.on("projectExists", (event, projectId) => {
-    const result = dbModel.projectExists(projectId);
-    event.sender.send("projectExists", result);
-  });
-  ipcMain.on(
+  ), d.on("projectExists", (e, t) => {
+    const n = s.projectExists(t);
+    e.sender.send("projectExists", n);
+  }), d.on(
     "updateTaskDesc",
-    (event, projectId, taskId, desc) => {
-      dbModel.updateTaskDesc(projectId, taskId, desc);
-      dbModel.setJson();
+    (e, t, n, o) => {
+      s.updateTaskDesc(t, n, o), s.setJson();
     }
-  );
-  ipcMain.on(
+  ), d.on(
     "updateTaskName",
-    (event, projectId, taskId, taskName) => {
-      dbModel.updateTaskName(projectId, taskId, taskName);
-      dbModel.setJson();
+    (e, t, n, o) => {
+      s.updateTaskName(t, n, o), s.setJson();
     }
-  );
-  ipcMain.on(
+  ), d.on(
     "updateAllTasks",
-    (event, projectId, tasks) => {
-      dbModel.updateAllTasks(projectId, tasks);
-      dbModel.setJson();
+    (e, t, n) => {
+      s.updateAllTasks(t, n), s.setJson();
     }
   );
 });
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin")
-    app.quit();
+g.on("window-all-closed", () => {
+  process.platform !== "darwin" && g.quit();
 });
 export {
-  BASE_PATH
+  f as BASE_PATH
 };

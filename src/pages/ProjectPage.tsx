@@ -39,6 +39,7 @@ const ProjectPage: React.FC = () => {
 
     const getTasks = useCallback(() => {
         console.log("Tasks fetchning ");
+        if (!project_id) return;
         electronAPI.getTasks(project_id);
     }, [project_id]);
 
@@ -51,6 +52,7 @@ const ProjectPage: React.FC = () => {
 
     useEffect(() => {
         if (effectRan.current == true) {
+            if (!project_id) return;
             electronAPI.projectExists(project_id);
             electronAPI.receive("projectExists", handleProjectExists);
             getTasks();
@@ -81,6 +83,7 @@ const ProjectPage: React.FC = () => {
             );
 
             setTasks(tempTasks);
+            if (!project_id) return;
             electronAPI.updateAllTasks(project_id, tempTasks);
         },
         [tasks, setTasks, project_id]
