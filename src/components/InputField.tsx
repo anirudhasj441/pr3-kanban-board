@@ -5,12 +5,13 @@ interface InputFieldProp {
     id: string;
     label: string;
     autoFocus?: boolean | undefined;
+    value?: string;
     onValueChange: (value: string) => void;
     onKeyDown?: KeyboardEventHandler<HTMLInputElement> | undefined;
 }
 
 const InputField: React.FC<InputFieldProp> = (props) => {
-    const [value, setValue] = useState("");
+    const [value, setValue] = useState(props.value);
     const input: React.MutableRefObject<null> = useRef(null);
     const valueChanged = () => {
         const inputElm: HTMLInputElement = document.getElementById(
@@ -108,6 +109,7 @@ const InputField: React.FC<InputFieldProp> = (props) => {
 
 InputField.defaultProps = {
     autoFocus: false,
+    value: "",
 };
 
 export default InputField;

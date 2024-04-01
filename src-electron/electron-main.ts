@@ -115,6 +115,18 @@ app.whenReady().then(() => {
         }
     );
     ipcMain.on(
+        "updateTaskName",
+        (
+            event: Electron.IpcMainEvent,
+            projectId: string,
+            taskId: string,
+            taskName: string
+        ) => {
+            dbModel.updateTaskName(projectId, taskId, taskName);
+            dbModel.setJson();
+        }
+    );
+    ipcMain.on(
         "updateAllTasks",
         (event: IpcMainEvent, projectId: string, tasks: Task[]) => {
             dbModel.updateAllTasks(projectId, tasks);

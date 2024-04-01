@@ -35,6 +35,9 @@ contextBridge.exposeInMainWorld("electronAPI", {
     updateTaskDesc: (projectId: string, taskId: string, desc: string) => {
         ipcRenderer.send("updateTaskDesc", projectId, taskId, desc);
     },
+    updateTaskName: (projectId: string, taskId: string, taskName: string) => {
+        ipcRenderer.send("updateTaskName", projectId, taskId, taskName);
+    },
     updateAllTasks: (projectId: string, tasks: Task[]) => {
         ipcRenderer.send("updateAllTasks", projectId, tasks);
     },

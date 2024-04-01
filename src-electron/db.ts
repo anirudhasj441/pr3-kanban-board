@@ -107,6 +107,12 @@ export default class DbModel {
         task.desc = desc;
     };
 
+    updateTaskName = (projectId: string, taskId: string, taskName: string) => {
+        const task: Task | undefined = this.getTask(projectId, taskId);
+        if (!task) return;
+        task.task = taskName;
+    };
+
     updateAllTasks = (projectId: string, tasks: Task[]) => {
         const project: Project | undefined = this.getProject(projectId);
         if (!project) return;
