@@ -1,69 +1,69 @@
 var m = Object.defineProperty;
 var T = (s, e, t) => e in s ? m(s, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : s[e] = t;
-var r = (s, e, t) => (T(s, typeof e != "symbol" ? e + "" : e, t), t);
+var c = (s, e, t) => (T(s, typeof e != "symbol" ? e + "" : e, t), t);
 import { app as g, ipcMain as d, BrowserWindow as x } from "electron";
 import p from "path";
-import { fileURLToPath as j } from "url";
+import { fileURLToPath as b } from "url";
 import l from "fs";
 let u;
-const b = new Uint8Array(16);
-function y() {
+const y = new Uint8Array(16);
+function P() {
   if (!u && (u = typeof crypto < "u" && crypto.getRandomValues && crypto.getRandomValues.bind(crypto), !u))
     throw new Error("crypto.getRandomValues() not supported. See https://github.com/uuidjs/uuid#getrandomvalues-not-supported");
-  return u(b);
+  return u(y);
 }
-const c = [];
+const r = [];
 for (let s = 0; s < 256; ++s)
-  c.push((s + 256).toString(16).slice(1));
-function P(s, e = 0) {
-  return c[s[e + 0]] + c[s[e + 1]] + c[s[e + 2]] + c[s[e + 3]] + "-" + c[s[e + 4]] + c[s[e + 5]] + "-" + c[s[e + 6]] + c[s[e + 7]] + "-" + c[s[e + 8]] + c[s[e + 9]] + "-" + c[s[e + 10]] + c[s[e + 11]] + c[s[e + 12]] + c[s[e + 13]] + c[s[e + 14]] + c[s[e + 15]];
+  r.push((s + 256).toString(16).slice(1));
+function _(s, e = 0) {
+  return r[s[e + 0]] + r[s[e + 1]] + r[s[e + 2]] + r[s[e + 3]] + "-" + r[s[e + 4]] + r[s[e + 5]] + "-" + r[s[e + 6]] + r[s[e + 7]] + "-" + r[s[e + 8]] + r[s[e + 9]] + "-" + r[s[e + 10]] + r[s[e + 11]] + r[s[e + 12]] + r[s[e + 13]] + r[s[e + 14]] + r[s[e + 15]];
 }
-const _ = typeof crypto < "u" && crypto.randomUUID && crypto.randomUUID.bind(crypto), k = {
-  randomUUID: _
+const v = typeof crypto < "u" && crypto.randomUUID && crypto.randomUUID.bind(crypto), k = {
+  randomUUID: v
 };
 function h(s, e, t) {
   if (k.randomUUID && !e && !s)
     return k.randomUUID();
   s = s || {};
-  const n = s.random || (s.rng || y)();
-  if (n[6] = n[6] & 15 | 64, n[8] = n[8] & 63 | 128, e) {
+  const o = s.random || (s.rng || P)();
+  if (o[6] = o[6] & 15 | 64, o[8] = o[8] & 63 | 128, e) {
     t = t || 0;
-    for (let o = 0; o < 16; ++o)
-      e[t + o] = n[o];
+    for (let n = 0; n < 16; ++n)
+      e[t + n] = o[n];
     return e;
   }
-  return P(n);
+  return _(o);
 }
-class v {
+class S {
   constructor() {
-    r(this, "dbFile");
-    r(this, "db");
-    r(this, "setJson", () => {
+    c(this, "dbFile");
+    c(this, "db");
+    c(this, "setJson", () => {
       l.existsSync(this.dbFile) || l.mkdirSync(p.dirname(this.dbFile), { recursive: !0 }), l.writeFileSync(this.dbFile, JSON.stringify(this.db));
     });
-    r(this, "getJson", () => {
-      const e = l.readFileSync(this.dbFile, "utf-8");
-      return JSON.parse(e);
+    c(this, "getJson", () => {
+      const e = l.readFileSync(this.dbFile, "utf-8"), t = JSON.parse(e);
+      return console.log("DATA: ", t), t;
     });
-    r(this, "getProject", (e) => this.db.projects.find(
-      (n) => n._id == e
+    c(this, "getProject", (e) => this.db.projects.find(
+      (o) => o._id == e
     ));
-    r(this, "getAllProject", () => this.db.projects);
-    r(this, "getTask", (e, t) => {
-      const n = this.db.projects.find(
+    c(this, "getAllProject", () => this.db.projects);
+    c(this, "getTask", (e, t) => {
+      const o = this.db.projects.find(
         (a) => a._id == e
       );
-      return n == null ? void 0 : n.tasks.find(
+      return o == null ? void 0 : o.tasks.find(
         (a) => a._id == t
       );
     });
-    r(this, "getAllTasks", (e) => {
+    c(this, "getAllTasks", (e) => {
       const t = this.db.projects.find(
-        (o) => o._id == e
+        (n) => n._id == e
       );
       return t == null ? void 0 : t.tasks;
     });
-    r(this, "createProject", (e) => {
+    c(this, "createProject", (e) => {
       const t = {
         _id: h(),
         title: e,
@@ -71,56 +71,56 @@ class v {
       };
       this.db.projects.push(t);
     });
-    r(this, "createTask", (e, t, n) => {
-      const o = this.getProject(e);
-      if (!o)
+    c(this, "createTask", (e, t, o) => {
+      const n = this.getProject(e);
+      if (!n)
         return;
       const a = {
         _id: h(),
         task: t,
         desc: "",
-        status: n
+        status: o
       };
-      o == null || o.tasks.push(a);
+      n == null || n.tasks.push(a);
     });
-    r(this, "updateTaskDesc", (e, t, n) => {
-      const o = this.getTask(e, t);
-      o && (o.desc = n);
+    c(this, "updateTaskDesc", (e, t, o) => {
+      const n = this.getTask(e, t);
+      n && (n.desc = o);
     });
-    r(this, "updateTaskName", (e, t, n) => {
-      const o = this.getTask(e, t);
-      o && (o.task = n);
+    c(this, "updateTaskName", (e, t, o) => {
+      const n = this.getTask(e, t);
+      n && (n.task = o);
     });
-    r(this, "updateAllTasks", (e, t) => {
-      const n = this.getProject(e);
-      n && (n.tasks = t);
+    c(this, "updateAllTasks", (e, t) => {
+      const o = this.getProject(e);
+      o && (o.tasks = t);
     });
-    r(this, "deleteTask", (e, t) => {
-      const n = this.getProject(e), o = n == null ? void 0 : n.tasks.findIndex(
+    c(this, "deleteTask", (e, t) => {
+      const o = this.getProject(e), n = o == null ? void 0 : o.tasks.findIndex(
         (a) => a._id == t
       );
-      console.log("task index: ", o), typeof o < "u" && (n == null || n.tasks.splice(o, 1));
+      console.log("task index: ", n), typeof n < "u" && (o == null || o.tasks.splice(n, 1));
     });
-    r(this, "deleteProject", (e) => {
-      const t = this.getProject(e), n = this.getAllProject();
+    c(this, "deleteProject", (e) => {
+      const t = this.getProject(e), o = this.getAllProject();
       if (t) {
-        const o = n.indexOf(t);
-        n.splice(o, 1);
+        const n = o.indexOf(t);
+        o.splice(n, 1);
       }
     });
-    r(this, "projectExists", (e) => this.getProject(e) !== void 0);
-    this.dbFile = p.join(f, "db.json"), console.log(l.existsSync(this.dbFile)), l.existsSync(this.dbFile) ? (console.log("file exits: ", l.existsSync(this.dbFile)), this.db = this.getJson()) : (this.db = {
+    c(this, "projectExists", (e) => this.getProject(e) !== void 0);
+    this.dbFile = p.join(j, "db.json"), console.log(l.existsSync(this.dbFile)), l.existsSync(this.dbFile) ? (console.log("file exits: ", l.existsSync(this.dbFile)), this.db = this.getJson()) : (this.db = {
       projects: []
     }, this.setJson());
   }
 }
-console.log("path: ", p.dirname(j(import.meta.url)));
-const S = j(import.meta.url), U = p.dirname(S), f = p.join(
+const D = b(import.meta.url), U = p.dirname(D), j = p.join(
   g.getPath("userData"),
   "kanban_board"
 );
+console.log("path: ", j);
 let i;
-const D = () => {
+const f = () => {
   i = new x({
     width: 1e3,
     height: 600,
@@ -132,11 +132,11 @@ const D = () => {
       contextIsolation: !0,
       nodeIntegration: !0
     }
-  }), i.setMenu(null), process.env.VITE_DEV_SERVER_URL ? (i.webContents.openDevTools(), i.loadURL(process.env.VITE_DEV_SERVER_URL)) : i.loadFile("../dist/react/index.html");
+  }), i.setMenu(null), i.webContents.openDevTools(), process.env.VITE_DEV_SERVER_URL ? i.loadURL(process.env.VITE_DEV_SERVER_URL) : i.loadFile("dist/react/index.html");
 };
 g.whenReady().then(() => {
-  D();
-  const s = new v();
+  f();
+  const s = new S();
   d.on("close", () => {
     i == null || i.close();
   }), d.on("minimize", () => {
@@ -150,19 +150,19 @@ g.whenReady().then(() => {
     }
   ), d.on(
     "createTask",
-    (e, t, n, o) => {
-      s.createTask(t, n, o), console.log("Creating Task!!"), s.setJson();
+    (e, t, o, n) => {
+      s.createTask(t, o, n), console.log("Creating Task!!"), s.setJson();
     }
   ), d.on("getProjects", (e) => {
     const t = s.getAllProject();
-    e.sender.send("getProjects", t);
+    console.log("project: ", t), e.sender.send("getProjects", t);
   }), d.on("getTasks", (e, t) => {
-    const n = s.getAllTasks(t);
-    e.sender.send("getTasks", n);
+    const o = s.getAllTasks(t);
+    e.sender.send("getTasks", o);
   }), d.on(
     "deleteTask",
-    (e, t, n) => {
-      s.deleteTask(t, n), s.setJson();
+    (e, t, o) => {
+      s.deleteTask(t, o), s.setJson();
     }
   ), d.on(
     "deleteProject",
@@ -170,22 +170,22 @@ g.whenReady().then(() => {
       s.deleteProject(t), s.setJson();
     }
   ), d.on("projectExists", (e, t) => {
-    const n = s.projectExists(t);
-    e.sender.send("projectExists", n);
+    const o = s.projectExists(t);
+    e.sender.send("projectExists", o);
   }), d.on(
     "updateTaskDesc",
-    (e, t, n, o) => {
-      s.updateTaskDesc(t, n, o), s.setJson();
+    (e, t, o, n) => {
+      s.updateTaskDesc(t, o, n), s.setJson();
     }
   ), d.on(
     "updateTaskName",
-    (e, t, n, o) => {
-      s.updateTaskName(t, n, o), s.setJson();
+    (e, t, o, n) => {
+      s.updateTaskName(t, o, n), s.setJson();
     }
   ), d.on(
     "updateAllTasks",
-    (e, t, n) => {
-      s.updateAllTasks(t, n), s.setJson();
+    (e, t, o) => {
+      s.updateAllTasks(t, o), s.setJson();
     }
   );
 });
@@ -193,5 +193,5 @@ g.on("window-all-closed", () => {
   process.platform !== "darwin" && g.quit();
 });
 export {
-  f as BASE_PATH
+  j as BASE_PATH
 };

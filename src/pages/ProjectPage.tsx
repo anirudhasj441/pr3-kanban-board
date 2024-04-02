@@ -50,8 +50,11 @@ const ProjectPage: React.FC = () => {
         [setTasks]
     );
 
+    const isDev =
+        !process.env.NODE_ENV || process.env.NODE_ENV === "development";
+
     useEffect(() => {
-        if (effectRan.current == true) {
+        if (effectRan.current === true || !isDev) {
             if (!project_id) return;
             electronAPI.projectExists(project_id);
             electronAPI.receive("projectExists", handleProjectExists);
@@ -61,7 +64,7 @@ const ProjectPage: React.FC = () => {
         return () => {
             effectRan.current = true;
         };
-    }, [handleProjectExists, getTasks, handleGetTasks, project_id]);
+    }, [handleProjectExists, getTasks, handleGetTasks, project_id, isDev]);
 
     const handleDragEnd = useCallback(
         (event: DragEndEvent) => {

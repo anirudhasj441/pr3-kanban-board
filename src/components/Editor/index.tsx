@@ -59,8 +59,11 @@ const Editor: React.FC<EditorProps> = (props: EditorProps) => {
         [props]
     );
 
+    const isDev =
+        !process.env.NODE_ENV || process.env.NODE_ENV === "development";
+
     useEffect(() => {
-        if (effectRan.current === true) {
+        if (effectRan.current === true || !isDev) {
             if (props.task.desc === "") return;
             const taskDesc: SerializedEditorState = JSON.parse(props.task.desc);
             console.log(editorRef.current);
@@ -75,7 +78,7 @@ const Editor: React.FC<EditorProps> = (props: EditorProps) => {
         return () => {
             effectRan.current = true;
         };
-    }, [props, setEditorState]);
+    }, [props, setEditorState, isDev]);
 
     useEffect(() => {
         editorRef.current?.setEditable(props.editMode);

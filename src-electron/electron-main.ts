@@ -4,7 +4,6 @@ import { fileURLToPath } from "url";
 import DbModel from "./db";
 import { Project, Status, Task } from "../types";
 
-console.log("path: ", path.dirname(fileURLToPath(import.meta.url)));
 const __filename: string = fileURLToPath(import.meta.url);
 const __dirname: string = path.dirname(__filename);
 
@@ -13,6 +12,7 @@ export const BASE_PATH: string = path.join(
     "kanban_board"
 );
 
+console.log("path: ", BASE_PATH);
 let mainWindow: BrowserWindow | undefined;
 
 const createWindow = () => {
@@ -29,8 +29,8 @@ const createWindow = () => {
         },
     });
     mainWindow.setMenu(null);
+    mainWindow.webContents.openDevTools();
     if (process.env.VITE_DEV_SERVER_URL) {
-        mainWindow.webContents.openDevTools();
         mainWindow.loadURL(process.env.VITE_DEV_SERVER_URL);
     } else {
         mainWindow.loadFile("dist/react/index.html");
@@ -77,6 +77,7 @@ app.whenReady().then(() => {
     );
     ipcMain.on("getProjects", (event: Electron.IpcMainEvent) => {
         const projects: Project[] = dbModel.getAllProject();
+        console.log("project: ", projects);
         event.sender.send("getProjects", projects);
     });
     ipcMain.on("getTasks", (event: Electron.IpcMainEvent, projectId) => {

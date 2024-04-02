@@ -34,6 +34,8 @@ export default class DbModel {
 
         const data: DB = JSON.parse(fileData);
 
+        console.log("DATA: ", data);
+
         return data;
     };
 

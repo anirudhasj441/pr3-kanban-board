@@ -16,6 +16,9 @@ const LeftDrawer: React.FC = () => {
     const location = useLocation();
     const navigate = useNavigate();
 
+    const isDev =
+        !process.env.NODE_ENV || process.env.NODE_ENV === "development";
+
     const getProjects = useCallback(() => {
         console.log(typeof window);
         if (typeof window !== "undefined") electronAPI.getProjects();
@@ -42,7 +45,8 @@ const LeftDrawer: React.FC = () => {
     );
 
     useEffect(() => {
-        if (effectRan.current === true) {
+        console.log("Start point: ", effectRan.current);
+        if (effectRan.current === true || !isDev) {
             getProjects();
             electronAPI.receive("getProjects", handleGetProject);
         }
@@ -64,6 +68,7 @@ const LeftDrawer: React.FC = () => {
             </div>
             <MyScrollArea className="px-5 py-3">
                 <ul className="list-none flex flex-col gap-3">
+                    {effectRan.current}
                     {projects.map((project: Project) => (
                         <li
                             key={project._id}
