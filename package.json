@@ -14,6 +14,7 @@
         "start": "vite",
         "build": "tsc && vite build",
         "build:linux": "npm run build && electron-builder --linux",
+        "build:win": "npm run build && electron-builder --win --x64",
         "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
         "preview": "vite preview"
     },
@@ -28,7 +29,7 @@
             "category": "utilities"
         },
         "win": {
-            "icon": "./src/assets/icons/kanbanboard.svg"
+            "icon": "./src/assets/icons/kanbanboard.png"
         }
     },
     "preload": {
