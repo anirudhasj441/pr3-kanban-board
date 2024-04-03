@@ -20,13 +20,11 @@ const LeftDrawer: React.FC = () => {
         !process.env.NODE_ENV || process.env.NODE_ENV === "development";
 
     const getProjects = useCallback(() => {
-        console.log(typeof window);
         if (typeof window !== "undefined") electronAPI.getProjects();
     }, []);
 
     const handleGetProject = useCallback((projects: Project[]) => {
         setProjects(projects);
-        console.log("Projects:: ", projects);
     }, []);
 
     const handleDeleteProject = useCallback(
@@ -38,14 +36,12 @@ const LeftDrawer: React.FC = () => {
                 navigate("/");
             }
 
-            console.log("PATH: ", location.pathname.split("/")[1]);
             getProjects();
         },
         [getProjects, location, navigate]
     );
 
     useEffect(() => {
-        console.log("Start point: ", effectRan.current);
         if (effectRan.current === true || !isDev) {
             getProjects();
             electronAPI.receive("getProjects", handleGetProject);

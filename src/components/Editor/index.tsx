@@ -38,7 +38,7 @@ const Editor: React.FC<EditorProps> = (props: EditorProps) => {
     const effectRan = useRef(false);
     const [editorState, setEditorState] = useState<EditorState>();
     const onError = (error: unknown) => {
-        console.log(error);
+        console.error("Editor error: ", error);
     };
     const editorRef = useRef<LexicalEditor | null>(null);
     const initialConfig = {
@@ -66,11 +66,9 @@ const Editor: React.FC<EditorProps> = (props: EditorProps) => {
         if (effectRan.current === true || !isDev) {
             if (props.task.desc === "") return;
             const taskDesc: SerializedEditorState = JSON.parse(props.task.desc);
-            console.log(editorRef.current);
             if (editorRef.current) {
                 const editor_state =
                     editorRef.current.parseEditorState(taskDesc);
-                console.log("EDITOR STATE:: ", editor_state);
                 // setEditorState(editor_state);
                 editorRef.current.setEditorState(editor_state);
             }

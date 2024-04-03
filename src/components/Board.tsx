@@ -28,7 +28,6 @@ const Board: React.FC<BoardProps> = (props: BoardProps) => {
 
     const createTask = useCallback(
         (taskTitle: string) => {
-            console.log("CREATING TASK!!!");
             if (taskTitle === "") return;
             electronAPI.createTask(props.project_id, taskTitle, props.status);
             setShowForm(false);
@@ -39,7 +38,6 @@ const Board: React.FC<BoardProps> = (props: BoardProps) => {
 
     const handleOnDelete = useCallback(
         (taskId: string) => {
-            console.log("task id: ", taskId);
             electronAPI.deleteTask(props.project_id, taskId);
             props.getTasks();
         },
@@ -48,7 +46,6 @@ const Board: React.FC<BoardProps> = (props: BoardProps) => {
 
     const handleOnUpdateTaskDesc = useCallback(
         (taskId: string, editorState: EditorState | undefined) => {
-            console.log("Updated!!!");
             electronAPI.updateTaskDesc(
                 props.project_id,
                 taskId,

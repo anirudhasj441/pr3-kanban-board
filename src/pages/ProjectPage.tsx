@@ -30,7 +30,6 @@ const ProjectPage: React.FC = () => {
     const handleProjectExists = useCallback(
         (result: boolean) => {
             if (!result) {
-                console.log("project exists: ", result);
                 navigate("/");
             }
         },
@@ -38,7 +37,6 @@ const ProjectPage: React.FC = () => {
     );
 
     const getTasks = useCallback(() => {
-        console.log("Tasks fetchning ");
         if (!project_id) return;
         electronAPI.getTasks(project_id);
     }, [project_id]);
