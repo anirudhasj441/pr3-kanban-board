@@ -2,11 +2,11 @@
 
 This is a mini project, i try to build for exploring react capabilities.
 
-In this project user can create multiple project and each broject has one board consists of three status column [Todo, In progress, completed],
+In this project user can create multiple project and each project has one board consists of three status column [Todo, In progress, completed],
 
-It will have drag and drop compability, to reorder tasks and change status.
+It will have drag and drop compatibility, to reorder tasks and change status.
 
-I had work with electron js and I want to focus only on react now, So I planned to crate a desktop application using elecron js instead of web app, so i don't worry about db, backend server and all.
+I had work with electron js and I want to focus only on react now, So I planned to crate a desktop application using electron js instead of web app, so i don't worry about db, backend server and all.
 
 Tech Stack:
 
@@ -44,3 +44,11 @@ It will create .deb file in ./dist/electron folder, you can install app by runni
 ```bash
 $ sudo dpkg -i <path to deb file>.deb
 ```
+
+To create build for windows
+
+```bash
+$ npm run build:win
+```
+
+It will create nsis installer setup file which can be easily install.
