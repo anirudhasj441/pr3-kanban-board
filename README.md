@@ -30,3 +30,17 @@ $ npm install
 ```bash
 $ npm start
 ```
+
+## Deployment
+
+To create build for linux(ubuntu)
+
+```bash
+$ npm run build:linux
+```
+
+It will create .deb file in ./dist/electron folder, you can install app by running following command
+
+```bash
+$ sudo dpkg -i <path to deb file>.deb
+```
