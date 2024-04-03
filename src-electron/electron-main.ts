@@ -29,8 +29,8 @@ const createWindow = () => {
         },
     });
     mainWindow.setMenu(null);
-    mainWindow.webContents.openDevTools();
     if (process.env.VITE_DEV_SERVER_URL) {
+        mainWindow.webContents.openDevTools();
         mainWindow.loadURL(process.env.VITE_DEV_SERVER_URL);
     } else {
         mainWindow.loadFile("dist/react/index.html");

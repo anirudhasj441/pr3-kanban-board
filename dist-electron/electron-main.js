@@ -132,7 +132,7 @@ const f = () => {
       contextIsolation: !0,
       nodeIntegration: !0
     }
-  }), i.setMenu(null), i.webContents.openDevTools(), process.env.VITE_DEV_SERVER_URL ? i.loadURL(process.env.VITE_DEV_SERVER_URL) : i.loadFile("dist/react/index.html");
+  }), i.setMenu(null), process.env.VITE_DEV_SERVER_URL ? (i.webContents.openDevTools(), i.loadURL(process.env.VITE_DEV_SERVER_URL)) : i.loadFile("dist/react/index.html");
 };
 g.whenReady().then(() => {
   f();

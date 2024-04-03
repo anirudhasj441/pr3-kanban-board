@@ -18,16 +18,17 @@
         "preview": "vite preview"
     },
     "build": {
-        "appId": "automatic field detection kit",
+        "productName": "Kanban Board",
         "directories": {
             "output": "./dist/electron/"
         },
         "linux": {
             "target": "deb",
-            "icon": "./src/assets/programmer.png"
+            "icon": "./src/assets/icons/kanbanboard.svg",
+            "category": "utilities"
         },
         "win": {
-            "icon": "./src/assets/programmer.png"
+            "icon": "./src/assets/icons/kanbanboard.svg"
         }
     },
     "preload": {
