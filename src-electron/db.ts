@@ -11,14 +11,12 @@ export default class DbModel {
     constructor() {
         this.dbFile = path.join(BASE_PATH, "db.json");
 
-        console.log(fs.existsSync(this.dbFile));
         if (!fs.existsSync(this.dbFile)) {
             this.db = {
                 projects: [],
             };
             this.setJson();
         } else {
-            console.log("file exits: ", fs.existsSync(this.dbFile));
             this.db = this.getJson();
         }
     }
@@ -33,8 +31,6 @@ export default class DbModel {
         const fileData: string = fs.readFileSync(this.dbFile, "utf-8");
 
         const data: DB = JSON.parse(fileData);
-
-        console.log("DATA: ", data);
 
         return data;
     };
@@ -127,8 +123,6 @@ export default class DbModel {
         const taskIndex: number | undefined = project?.tasks.findIndex(
             (task: Task) => task._id == taskId
         );
-
-        console.log("task index: ", taskIndex);
 
         if (typeof taskIndex !== "undefined") {
             project?.tasks.splice(taskIndex, 1);

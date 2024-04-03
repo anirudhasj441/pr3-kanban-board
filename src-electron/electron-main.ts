@@ -12,7 +12,6 @@ export const BASE_PATH: string = path.join(
     "kanban_board"
 );
 
-console.log("path: ", BASE_PATH);
 let mainWindow: BrowserWindow | undefined;
 
 const createWindow = () => {
@@ -47,7 +46,6 @@ app.whenReady().then(() => {
         mainWindow?.minimize();
     });
     ipcMain.on("maximize", () => {
-        console.log("Maximizing: ");
         if (mainWindow?.isMaximized()) {
             mainWindow?.unmaximize();
         } else {
@@ -58,7 +56,6 @@ app.whenReady().then(() => {
         "createProject",
         (evt: Electron.IpcMainEvent, projectTitle: string) => {
             dbModel.createProject(projectTitle);
-            console.log("Creating Project ");
             dbModel.setJson();
         }
     );
@@ -71,13 +68,11 @@ app.whenReady().then(() => {
             status: Status
         ) => {
             dbModel.createTask(projectId, taskTitle, status);
-            console.log("Creating Task!!");
             dbModel.setJson();
         }
     );
     ipcMain.on("getProjects", (event: Electron.IpcMainEvent) => {
         const projects: Project[] = dbModel.getAllProject();
-        console.log("project: ", projects);
         event.sender.send("getProjects", projects);
     });
     ipcMain.on("getTasks", (event: Electron.IpcMainEvent, projectId) => {
