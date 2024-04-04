@@ -1,7 +1,27 @@
-import React from "react";
+import React, { useCallback, useState } from "react";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
+import { Icon } from "@iconify-icon/react/dist/iconify.mjs";
 
-const SearchInput: React.FC = () => {
+interface SearchInputProps {
+    onChange?: (value: string) => void;
+}
+
+const SearchInput: React.FC<SearchInputProps> = (props: SearchInputProps) => {
+    const [value, setValue] = useState<string>("");
+    const handleOnChange = useCallback(() => {
+        const inputElm: HTMLInputElement = document.getElementById(
+            "search-input"
+        ) as HTMLInputElement;
+        setValue(inputElm.value);
+        if (props.onChange) props.onChange(inputElm.value);
+    }, [props]);
+
+    const handleResetValue = useCallback(() => {
+        setValue("");
+        if (props.onChange) props.onChange("");
+        // handleOnChange();
+    }, [setValue, props]);
+
     return (
         <div
             className="
@@ -33,6 +53,7 @@ const SearchInput: React.FC = () => {
             <input
                 type="text"
                 id="search-input"
+                value={value}
                 className="
                     peer
                     p-2
@@ -45,6 +66,7 @@ const SearchInput: React.FC = () => {
                     z-10
                 "
                 placeholder="seacrh"
+                onChange={handleOnChange}
             />
             <label
                 htmlFor="search-input"
@@ -78,11 +100,25 @@ const SearchInput: React.FC = () => {
             >
                 Search Project
             </label>
-            <MagnifyingGlassIcon
-                height="30"
-                width={30}
-                className="peer-focus:text-indigo-700 text-slate-500"
-            />
+            {value.length > 0 ? (
+                <button
+                    onClick={handleResetValue}
+                    className="peer-focus:text-indigo-700 text-slate-500"
+                >
+                    <Icon
+                        icon="material-symbols:close"
+                        width={25}
+                        height={25}
+                        className="block"
+                    ></Icon>
+                </button>
+            ) : (
+                <MagnifyingGlassIcon
+                    height="30"
+                    width={30}
+                    className="peer-focus:text-indigo-700 text-slate-500"
+                />
+            )}
         </div>
     );
 };

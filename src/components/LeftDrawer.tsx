@@ -11,8 +11,10 @@ import { Icon } from "@iconify-icon/react/dist/iconify.mjs";
 
 const LeftDrawer: React.FC = () => {
     const effectRan = useRef(false);
+
     const [dialogState, setDailogState] = useState(false);
     const [projects, setProjects] = useState<Project[]>([]);
+    // const [seacrhQuery, setSearchQuery] = useState<string>("");
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -52,6 +54,21 @@ const LeftDrawer: React.FC = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    const handleSearchChanged = useCallback(
+        (value: string) => {
+            if (value === "") {
+                getProjects();
+                return;
+            }
+            const filterProject: Project[] | undefined = projects.filter(
+                (project: Project) =>
+                    project.title.toLowerCase().includes(value.toLowerCase())
+            );
+            if (filterProject) setProjects(filterProject);
+        },
+        [projects, getProjects]
+    );
+
     const onCreateProject = useCallback(() => {
         setDailogState(false);
         electronAPI.getProjects();
@@ -60,7 +77,7 @@ const LeftDrawer: React.FC = () => {
     return (
         <div className="h-full py-5 flex flex-col bg-gray-50 border-r-[0.2px] shadow-2xl">
             <div className="px-5">
-                <SearchInput />
+                <SearchInput onChange={handleSearchChanged} />
             </div>
             <MyScrollArea className="px-5 py-3">
                 <ul className="list-none flex flex-col gap-3">
