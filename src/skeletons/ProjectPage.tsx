@@ -6,7 +6,7 @@ const ProjectPageSkeleton: React.FC = () => {
     return (
         <div className="h-full flex gap-5">
             {[1, 2, 3].map((item: number) => (
-                <div className="flex-1 flex flex-col gap-5" key={item}>
+                <div key={item} className="flex-1 flex flex-col gap-5">
                     <div>
                         <Skeleton
                             // enableAnimation={false}
