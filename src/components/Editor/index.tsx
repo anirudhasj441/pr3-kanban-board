@@ -1,18 +1,23 @@
 import React, { useCallback, useEffect, useState, useRef } from "react";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
-import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
-import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
-import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
-import MyOnChangePlugin from "./plugins/MyOnChangePlugin";
 import theme from "./theme";
-import ToolbarPlugin from "./plugins/ToolbarPlugin";
 import "./style.css";
 import { EditorState, LexicalEditor, SerializedEditorState } from "lexical";
 import Space from "../Space";
 import { Task } from "../../../types";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import EditorNodes from "./EdiorNodes";
+
+// imprt editor plugins
+import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
+import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
+import MyOnChangePlugin from "./plugins/MyOnChangePlugin";
+import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
+import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
+import { ListPlugin } from "@lexical/react/LexicalListPlugin";
+import ToolbarPlugin from "./plugins/ToolbarPlugin";
 
 interface EditorProps {
     id: string;
@@ -44,6 +49,7 @@ const Editor: React.FC<EditorProps> = (props: EditorProps) => {
     const initialConfig = {
         namespace: "myEditor",
         theme,
+        nodes: [...EditorNodes],
         onError,
     };
 
@@ -91,8 +97,11 @@ const Editor: React.FC<EditorProps> = (props: EditorProps) => {
                         <ContentEditable className="w-full p-3 bottom-0 focus-visible:outline-none text-slate-600 rounded-md shadow-md bg-white" />
                     }
                     placeholder={
-                        <div className="absolute top-3 left-3 text-slate-600">
-                            Description not available!
+                        <div
+                            className="absolute top-3 left-3 text-slate-500 cursor-text"
+                            onClick={() => editorRef.current?.focus()}
+                        >
+                            Write a description of task here...
                         </div>
                     }
                     ErrorBoundary={LexicalErrorBoundary}
@@ -100,6 +109,8 @@ const Editor: React.FC<EditorProps> = (props: EditorProps) => {
             </div>
             <HistoryPlugin />
             <AutoFocusPlugin />
+            <ListPlugin />
+            <LinkPlugin />
             <MyOnChangePlugin onChange={onChange} />
             {props.editMode ? (
                 <div className="flex pt-2 gap-1">
