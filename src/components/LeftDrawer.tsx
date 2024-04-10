@@ -41,6 +41,22 @@ const LeftDrawer: React.FC = () => {
         [getProjects, location, navigate]
     );
 
+    const handleSearchInputChange = useCallback(
+        (value: string) => {
+            if ("" === value) {
+                getProjects();
+                return;
+            }
+
+            const filterProjects = [...projects].filter((project: Project) =>
+                project.title.toLowerCase().includes(value.toLowerCase())
+            );
+
+            setProjects(filterProjects);
+        },
+        [getProjects, projects]
+    );
+
     useEffect(() => {
         if (effectRan.current === true || !isDev) {
             getProjects();
@@ -60,7 +76,10 @@ const LeftDrawer: React.FC = () => {
     return (
         <div className="h-full py-5 flex flex-col bg-gray-50 border-r-[0.2px] shadow-2xl">
             <div className="px-5">
-                <SearchInput />
+                <SearchInput
+                    onChange={handleSearchInputChange}
+                    onReset={getProjects}
+                />
             </div>
             <MyScrollArea className="px-5 py-3">
                 <ul className="list-none flex flex-col gap-3">
