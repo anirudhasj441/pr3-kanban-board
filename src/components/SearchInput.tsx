@@ -1,7 +1,30 @@
-import React from "react";
+import React, { useCallback, useState } from "react";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
+import { Icon } from "@iconify-icon/react/dist/iconify.mjs";
 
-const SearchInput: React.FC = () => {
+interface SearchInputProps {
+    onChange?: (value: string) => void;
+    onReset?: () => void;
+}
+
+const SearchInput: React.FC<SearchInputProps> = (props: SearchInputProps) => {
+    const [value, setValue] = useState<string>("");
+
+    const valueChanged = useCallback(
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+            const inputValue: string = event.target.value;
+
+            setValue(inputValue);
+            if (props.onChange) props.onChange(inputValue);
+        },
+        [props]
+    );
+
+    const valueReset = useCallback(() => {
+        setValue("");
+        if (props.onReset) props.onReset();
+    }, [props]);
+
     return (
         <div
             className="
@@ -44,6 +67,8 @@ const SearchInput: React.FC = () => {
                     placeholder:text-transparent
                     z-10
                 "
+                value={value}
+                onChange={valueChanged}
                 placeholder="seacrh"
             />
             <label
@@ -78,11 +103,25 @@ const SearchInput: React.FC = () => {
             >
                 Search Project
             </label>
-            <MagnifyingGlassIcon
-                height="30"
-                width={30}
-                className="peer-focus:text-indigo-700 text-slate-500"
-            />
+            {value.length > 0 ? (
+                <button
+                    className="peer-focus:text-indigo-700 text-slate-500"
+                    onClick={valueReset}
+                >
+                    <Icon
+                        icon="material-symbols:close"
+                        width={30}
+                        height={30}
+                        className="block"
+                    />
+                </button>
+            ) : (
+                <MagnifyingGlassIcon
+                    height="30"
+                    width={30}
+                    className="peer-focus:text-indigo-700 text-slate-500"
+                />
+            )}
         </div>
     );
 };
