@@ -6,6 +6,7 @@ export interface Task {
     task: string;
     desc: string;
     status: Status;
+    progress?: number;
 }
 
 export interface Project {
