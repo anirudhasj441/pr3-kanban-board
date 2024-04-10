@@ -68,10 +68,8 @@ const SearchInput: React.FC<SearchInputProps> = (props: SearchInputProps) => {
                     placeholder:text-transparent
                     z-10
                 "
-                value={value}
                 onChange={valueChanged}
                 placeholder="seacrh"
-                onChange={handleOnChange}
             />
             <label
                 htmlFor="search-input"
