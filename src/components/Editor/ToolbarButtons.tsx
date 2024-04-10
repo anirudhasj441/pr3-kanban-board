@@ -30,18 +30,6 @@ export const formatButtons: TextFormatButton[] = [
         id: 3,
         icon: (
             <Icon
-                icon="mi:underline"
-                height={20}
-                width={20}
-                className="block text-slate-600"
-            />
-        ),
-        command: "underline",
-    },
-    {
-        id: 4,
-        icon: (
-            <Icon
                 icon="mi:strikethrough"
                 height={20}
                 width={20}
