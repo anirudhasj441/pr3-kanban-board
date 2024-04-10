@@ -56,6 +56,7 @@ const SearchInput: React.FC<SearchInputProps> = (props: SearchInputProps) => {
             <input
                 type="text"
                 id="search-input"
+                value={value}
                 className="
                     peer
                     p-2
@@ -70,6 +71,7 @@ const SearchInput: React.FC<SearchInputProps> = (props: SearchInputProps) => {
                 value={value}
                 onChange={valueChanged}
                 placeholder="seacrh"
+                onChange={handleOnChange}
             />
             <label
                 htmlFor="search-input"

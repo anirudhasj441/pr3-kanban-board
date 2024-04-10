@@ -11,8 +11,10 @@ import { Icon } from "@iconify-icon/react/dist/iconify.mjs";
 
 const LeftDrawer: React.FC = () => {
     const effectRan = useRef(false);
+
     const [dialogState, setDailogState] = useState(false);
     const [projects, setProjects] = useState<Project[]>([]);
+    // const [seacrhQuery, setSearchQuery] = useState<string>("");
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -67,6 +69,21 @@ const LeftDrawer: React.FC = () => {
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    const handleSearchChanged = useCallback(
+        (value: string) => {
+            if (value === "") {
+                getProjects();
+                return;
+            }
+            const filterProject: Project[] | undefined = projects.filter(
+                (project: Project) =>
+                    project.title.toLowerCase().includes(value.toLowerCase())
+            );
+            if (filterProject) setProjects(filterProject);
+        },
+        [projects, getProjects]
+    );
 
     const onCreateProject = useCallback(() => {
         setDailogState(false);
