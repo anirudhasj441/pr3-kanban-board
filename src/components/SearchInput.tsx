@@ -4,23 +4,26 @@ import { Icon } from "@iconify-icon/react/dist/iconify.mjs";
 
 interface SearchInputProps {
     onChange?: (value: string) => void;
+    onReset?: () => void;
 }
 
 const SearchInput: React.FC<SearchInputProps> = (props: SearchInputProps) => {
     const [value, setValue] = useState<string>("");
-    const handleOnChange = useCallback(() => {
-        const inputElm: HTMLInputElement = document.getElementById(
-            "search-input"
-        ) as HTMLInputElement;
-        setValue(inputElm.value);
-        if (props.onChange) props.onChange(inputElm.value);
-    }, [props]);
 
-    const handleResetValue = useCallback(() => {
+    const valueChanged = useCallback(
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+            const inputValue: string = event.target.value;
+
+            setValue(inputValue);
+            if (props.onChange) props.onChange(inputValue);
+        },
+        [props]
+    );
+
+    const valueReset = useCallback(() => {
         setValue("");
-        if (props.onChange) props.onChange("");
-        // handleOnChange();
-    }, [setValue, props]);
+        if (props.onReset) props.onReset();
+    }, [props]);
 
     return (
         <div
@@ -65,6 +68,8 @@ const SearchInput: React.FC<SearchInputProps> = (props: SearchInputProps) => {
                     placeholder:text-transparent
                     z-10
                 "
+                value={value}
+                onChange={valueChanged}
                 placeholder="seacrh"
                 onChange={handleOnChange}
             />
@@ -102,15 +107,15 @@ const SearchInput: React.FC<SearchInputProps> = (props: SearchInputProps) => {
             </label>
             {value.length > 0 ? (
                 <button
-                    onClick={handleResetValue}
                     className="peer-focus:text-indigo-700 text-slate-500"
+                    onClick={valueReset}
                 >
                     <Icon
                         icon="material-symbols:close"
-                        width={25}
-                        height={25}
+                        width={30}
+                        height={30}
                         className="block"
-                    ></Icon>
+                    />
                 </button>
             ) : (
                 <MagnifyingGlassIcon
