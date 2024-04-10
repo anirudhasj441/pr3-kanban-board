@@ -16,6 +16,9 @@ const TaskDetail: React.FC<TaskDetailProps> = (props: TaskDetailProps) => {
     const onSave = useCallback(
         (editorState: EditorState | undefined) => {
             props.onUpdateDesc && props.onUpdateDesc(editorState);
+            setTimeout(() => {
+                setEditMode(false);
+            }, 1);
         },
         [props]
     );

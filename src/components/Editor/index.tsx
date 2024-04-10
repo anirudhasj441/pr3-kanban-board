@@ -4,13 +4,21 @@ import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
 import theme from "./theme";
 import "./style.css";
-import { EditorState, LexicalEditor, SerializedEditorState } from "lexical";
+import {
+    // $createParagraphNode,
+    // $createTextNode,
+    $getRoot,
+    EditorState,
+    LexicalEditor,
+    LexicalNode,
+    SerializedEditorState,
+} from "lexical";
 import Space from "../Space";
 import { Task } from "../../../types";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import EditorNodes from "./EdiorNodes";
 
-// imprt editor plugins
+// import editor plugins
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import MyOnChangePlugin from "./plugins/MyOnChangePlugin";
@@ -18,6 +26,12 @@ import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
 import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import ToolbarPlugin from "./plugins/ToolbarPlugin";
+import {
+    $convertFromMarkdownString,
+    // $convertToMarkdownString,
+} from "@lexical/markdown";
+import { EDITOR_TRANSFORMERS } from "./Markdowntransformers";
+import { editorStateStore } from "../../stores";
 
 interface EditorProps {
     id: string;
@@ -42,10 +56,13 @@ const RefPlugin: React.FC<RefPluginProps> = (props: RefPluginProps) => {
 const Editor: React.FC<EditorProps> = (props: EditorProps) => {
     const effectRan = useRef(false);
     const [editorState, setEditorState] = useState<EditorState>();
+    const [mounted, setMounted] = useState<boolean>(false);
     const onError = (error: unknown) => {
         console.error("Editor error: ", error);
     };
     const editorRef = useRef<LexicalEditor | null>(null);
+
+    const { setEditorValue, getEditorValue } = editorStateStore();
     const initialConfig = {
         namespace: "myEditor",
         theme,
@@ -60,7 +77,7 @@ const Editor: React.FC<EditorProps> = (props: EditorProps) => {
     const onSave = useCallback(
         (editorState: EditorState | undefined) => {
             props.onSave(editorState);
-            props.onClose();
+            // props.onClose();
         },
         [props]
     );
@@ -70,23 +87,104 @@ const Editor: React.FC<EditorProps> = (props: EditorProps) => {
 
     useEffect(() => {
         if (effectRan.current === true || !isDev) {
+            setMounted(true);
+            editorRef.current?.setEditable(false);
             if (props.task.desc === "") return;
+
             const taskDesc: SerializedEditorState = JSON.parse(props.task.desc);
             if (editorRef.current) {
                 const editor_state =
                     editorRef.current.parseEditorState(taskDesc);
-                // setEditorState(editor_state);
                 editorRef.current.setEditorState(editor_state);
+                setEditorState(editor_state);
+                if (!props.editMode) convertMarkdownToNodes();
             }
         }
         return () => {
             effectRan.current = true;
         };
-    }, [props, setEditorState, isDev]);
+    }, []);
 
     useEffect(() => {
-        editorRef.current?.setEditable(props.editMode);
+        if (effectRan.current || !isDev) {
+            if (!mounted) return;
+            console.log("after editmode: ", props.editMode);
+            editorRef.current?.setEditable(props.editMode);
+            // if (!props.editMode) {
+            //     console.log("Converting ,,,");
+            //     console.log("Upadte editMode");
+            //     convertMarkdownToNodes();
+            // } else {
+            //     convertNodeToMarkdown();
+            // }
+            if (props.task.desc === "") return;
+            console.log("editMode Change");
+            const taskDesc: SerializedEditorState = JSON.parse(props.task.desc);
+            if (editorRef.current) {
+                const editor_state =
+                    editorRef.current.parseEditorState(taskDesc);
+                editorRef.current.setEditorState(editor_state);
+                setEditorState(editor_state);
+                if (!props.editMode) {
+                    convertMarkdownToNodes();
+                    return;
+                }
+                convertNodeToMarkdown();
+            }
+        }
+        return () => {
+            effectRan.current = true;
+        };
     }, [props.editMode]);
+
+    useEffect(() => {
+        console.log("taske updates", JSON.parse(props.task.desc));
+    }, [props.task]);
+
+    const convertMarkdownToNodes = () => {
+        editorRef.current?.update(() => {
+            const root = $getRoot();
+            const nodes = root.getChildren();
+            const editor_state: EditorState | undefined =
+                editorRef.current?.getEditorState();
+            const editorValue: SerializedEditorState | undefined =
+                editor_state?.toJSON();
+            console.log("HERE!!!", editor_state);
+            if (!editorValue) return;
+
+            setEditorValue(editorValue);
+            const markdownList = nodes.map((node: LexicalNode) => {
+                const nodeText = node.getTextContent();
+                console.log(
+                    "node: ",
+                    nodeText,
+                    ": ",
+                    node.getTextContentSize()
+                );
+                return nodeText.trim().length > 0 ? nodeText : "\n";
+            });
+            const markdown = markdownList.join("");
+            console.log("markdown: ", markdown);
+            $convertFromMarkdownString(markdown, EDITOR_TRANSFORMERS);
+        });
+    };
+
+    const convertNodeToMarkdown = () => {
+        // editorRef.current?.update(() => {
+        //     const root = $getRoot();
+
+        //     const markdown = $convertToMarkdownString(EDITOR_TRANSFORMERS);
+        //     const textNode = $createParagraphNode().append(
+        //         $createTextNode(markdown)
+        //     );
+        //     root.clear().append(textNode);
+        // });
+        const editorValue: SerializedEditorState | undefined = getEditorValue();
+        if (!editorValue) return;
+        const editor_state = editorRef.current?.parseEditorState(editorValue);
+        if (!editor_state) return;
+        editorRef.current?.setEditorState(editor_state);
+    };
 
     return (
         <LexicalComposer initialConfig={initialConfig}>
