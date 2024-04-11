@@ -24,36 +24,39 @@ const TaskDetail: React.FC<TaskDetailProps> = (props: TaskDetailProps) => {
     );
 
     return (
-        <div className="pt-3 h-full flex flex-col">
-            <div className="flex mb-2">
-                <Space />
-                <button
-                    className={[
-                        "p-2 hover:bg-gray-200 rounded-md",
-                        editMode ? "bg-indigo-200" : "",
-                    ].join(" ")}
-                    onClick={() => setEditMode(!editMode)}
-                >
-                    <Icon
-                        icon="material-symbols:edit"
-                        height={20}
-                        width={20}
+        <div className="pt-3 h-full flex gap-4 w-full">
+            <div className="h-full flex  flex-col w-[60%]">
+                <div className="flex mb-2">
+                    <Space />
+                    <button
                         className={[
-                            "block",
-                            editMode ? "text-indigo-700" : "",
+                            "p-2 hover:bg-gray-200 rounded-md",
+                            editMode ? "bg-indigo-200" : "",
                         ].join(" ")}
+                        onClick={() => setEditMode(!editMode)}
+                    >
+                        <Icon
+                            icon="material-symbols:edit"
+                            height={20}
+                            width={20}
+                            className={[
+                                "block",
+                                editMode ? "text-indigo-700" : "",
+                            ].join(" ")}
+                        />
+                    </button>
+                </div>
+                <div className="flex-grow flex flex-col">
+                    <Editor
+                        id={props.task._id}
+                        task={props.task}
+                        onClose={() => setEditMode(false)}
+                        onSave={(editorState) => onSave(editorState)}
+                        editMode={editMode}
                     />
-                </button>
+                </div>
             </div>
-            <div className="flex-grow">
-                <Editor
-                    id={props.task._id}
-                    task={props.task}
-                    onClose={() => setEditMode(false)}
-                    onSave={(editorState) => onSave(editorState)}
-                    editMode={editMode}
-                />
-            </div>
+            <div className="h-full bg-white rounded-md flex-grow shadow-md"></div>
         </div>
     );
 };

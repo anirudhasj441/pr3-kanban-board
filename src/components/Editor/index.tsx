@@ -33,6 +33,7 @@ import {
 import { EDITOR_TRANSFORMERS } from "./Markdowntransformers";
 import { editorStateStore } from "../../stores";
 import { EditorMode } from "./types";
+// import MyContentEditable from "./MyContentEditable";
 
 interface EditorProps {
     id: string;
@@ -173,13 +174,11 @@ const Editor: React.FC<EditorProps> = (props: EditorProps) => {
         <LexicalComposer initialConfig={initialConfig}>
             {props.editMode ? (
                 <ToolbarPlugin onTogglePreview={setEditorMode} />
-            ) : (
-                <></>
-            )}
-            <div className="relative">
+            ) : null}
+            <div className="relative flex-1 flex flex-col">
                 <RichTextPlugin
                     contentEditable={
-                        <ContentEditable className="w-full p-3 bottom-0 focus-visible:outline-none text-slate-600 rounded-md shadow-md bg-white" />
+                        <ContentEditable className="flex-1 w-full p-3 bottom-0 focus-visible:outline-none text-slate-600 rounded-md shadow-md bg-white h-full" />
                     }
                     placeholder={
                         <div
@@ -191,32 +190,33 @@ const Editor: React.FC<EditorProps> = (props: EditorProps) => {
                     }
                     ErrorBoundary={LexicalErrorBoundary}
                 />
+                {props.editMode ? (
+                    <div className="flex pt-2 gap-1">
+                        <Space />
+                        <button
+                            className="px-2 py-1 rounded-md bg-indigo-700 text-white hover:bg-indigo-500 disabled:bg-indigo-400"
+                            onClick={() => onSave(editorState)}
+                            disabled={editorMode === "preview"}
+                        >
+                            Save
+                        </button>
+                        <button
+                            className="px-2 py-1 rounded-md hover:bg-gray-300"
+                            onClick={props.onClose}
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                ) : (
+                    <></>
+                )}
             </div>
             <HistoryPlugin />
             <AutoFocusPlugin />
             <ListPlugin />
             <LinkPlugin />
             <MyOnChangePlugin onChange={onChange} />
-            {props.editMode ? (
-                <div className="flex pt-2 gap-1">
-                    <Space />
-                    <button
-                        className="px-2 py-1 rounded-md bg-indigo-700 text-white hover:bg-indigo-500 disabled:bg-indigo-400"
-                        onClick={() => onSave(editorState)}
-                        disabled={editorMode === "preview"}
-                    >
-                        Save
-                    </button>
-                    <button
-                        className="px-2 py-1 rounded-md hover:bg-gray-300"
-                        onClick={props.onClose}
-                    >
-                        Cancel
-                    </button>
-                </div>
-            ) : (
-                <></>
-            )}
+
             <RefPlugin editorRef={editorRef} />
         </LexicalComposer>
     );

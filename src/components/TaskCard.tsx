@@ -8,7 +8,6 @@ import Seperator from "./Seperator";
 import { EditorState } from "lexical";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import MyScrollArea from "./ScrollArea";
 import InputField from "./InputField";
 
 interface TaskCardProps {
@@ -143,8 +142,9 @@ const TaskCard: React.FC<TaskCardProps> = (props: TaskCardProps) => {
                             className="fixed backdrop-blur-sm transition-all duration-900 ease-linear z-10"
                             style={{ inset: 0 }}
                         />
-                        <Dialog.Content className="fixed top-10 left-1/2 -translate-x-1/2 bg-gray-100 py-4 z-20 rounded-md w-[80%] h-[90svh] shadow-lg cursor-auto flex flex-col">
-                            <MyScrollArea className="px-4">
+                        <Dialog.Content className="fixed top-10 left-1/2 -translate-x-1/2 bg-gray-100 z-20 rounded-md w-[80%] h-[90svh] shadow-lg cursor-auto flex flex-col">
+                            {/* <MyScrollArea className="px-4 flex flex-col"> */}
+                            <div className="h-full flex flex-col p-4">
                                 <Dialog.Title className="flex">
                                     <div className="text-2xl text-slate-600">
                                         {props.task.task}
@@ -192,7 +192,8 @@ const TaskCard: React.FC<TaskCardProps> = (props: TaskCardProps) => {
                                         }
                                     />
                                 </div>
-                            </MyScrollArea>
+                            </div>
+                            {/* </MyScrollArea> */}
                         </Dialog.Content>
                     </Dialog.Root>
                 </>

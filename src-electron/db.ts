@@ -94,6 +94,7 @@ export default class DbModel {
             task: taskTitle,
             desc: "",
             status: status,
+            progress: 0,
         };
 
         project?.tasks.push(task);
