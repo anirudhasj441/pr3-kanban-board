@@ -90,7 +90,6 @@ const Editor: React.FC<EditorProps> = (props: EditorProps) => {
             setMounted(true);
             editorRef.current?.setEditable(false);
             if (props.task.desc === "") return;
-
             const taskDesc: SerializedEditorState = JSON.parse(props.task.desc);
             if (editorRef.current) {
                 const editor_state =
@@ -136,10 +135,6 @@ const Editor: React.FC<EditorProps> = (props: EditorProps) => {
             effectRan.current = true;
         };
     }, [props.editMode]);
-
-    useEffect(() => {
-        console.log("taske updates", JSON.parse(props.task.desc));
-    }, [props.task]);
 
     const convertMarkdownToNodes = () => {
         editorRef.current?.update(() => {
