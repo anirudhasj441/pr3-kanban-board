@@ -32,6 +32,7 @@ import {
 } from "@lexical/markdown";
 import { EDITOR_TRANSFORMERS } from "./Markdowntransformers";
 import { editorStateStore } from "../../stores";
+import { EditorMode } from "./types";
 
 interface EditorProps {
     id: string;
@@ -54,21 +55,17 @@ const RefPlugin: React.FC<RefPluginProps> = (props: RefPluginProps) => {
 };
 
 const Editor: React.FC<EditorProps> = (props: EditorProps) => {
+    const isDev =
+        !process.env.NODE_ENV || process.env.NODE_ENV === "development";
+
     const effectRan = useRef(false);
-    const [editorState, setEditorState] = useState<EditorState>();
-    const [mounted, setMounted] = useState<boolean>(false);
-    const onError = (error: unknown) => {
-        console.error("Editor error: ", error);
-    };
     const editorRef = useRef<LexicalEditor | null>(null);
 
+    const [editorState, setEditorState] = useState<EditorState>();
+    const [mounted, setMounted] = useState<boolean>(false);
+    const [editorMode, setEditorMode] = useState<EditorMode>("edit");
+
     const { setEditorValue, getEditorValue } = editorStateStore();
-    const initialConfig = {
-        namespace: "myEditor",
-        theme,
-        nodes: [...EditorNodes],
-        onError,
-    };
 
     const onChange = useCallback((editorState: EditorState) => {
         setEditorState(editorState);
@@ -81,9 +78,6 @@ const Editor: React.FC<EditorProps> = (props: EditorProps) => {
         },
         [props]
     );
-
-    const isDev =
-        !process.env.NODE_ENV || process.env.NODE_ENV === "development";
 
     useEffect(() => {
         if (effectRan.current === true || !isDev) {
@@ -107,17 +101,10 @@ const Editor: React.FC<EditorProps> = (props: EditorProps) => {
     useEffect(() => {
         if (effectRan.current || !isDev) {
             if (!mounted) return;
-            console.log("after editmode: ", props.editMode);
             editorRef.current?.setEditable(props.editMode);
-            // if (!props.editMode) {
-            //     console.log("Converting ,,,");
-            //     console.log("Upadte editMode");
-            //     convertMarkdownToNodes();
-            // } else {
-            //     convertNodeToMarkdown();
-            // }
             if (props.task.desc === "") return;
             console.log("editMode Change");
+            setEditorMode(props.editMode ? "edit" : "preview");
             const taskDesc: SerializedEditorState = JSON.parse(props.task.desc);
             if (editorRef.current) {
                 const editor_state =
@@ -135,6 +122,16 @@ const Editor: React.FC<EditorProps> = (props: EditorProps) => {
             effectRan.current = true;
         };
     }, [props.editMode]);
+
+    const onError = (error: unknown) => {
+        console.error("Editor error: ", error);
+    };
+    const initialConfig = {
+        namespace: "myEditor",
+        theme,
+        nodes: [...EditorNodes],
+        onError,
+    };
 
     const convertMarkdownToNodes = () => {
         editorRef.current?.update(() => {
@@ -158,22 +155,13 @@ const Editor: React.FC<EditorProps> = (props: EditorProps) => {
                 );
                 return nodeText.trim().length > 0 ? nodeText : "\n";
             });
-            const markdown = markdownList.join("");
+            const markdown = markdownList.join("\n");
             console.log("markdown: ", markdown);
             $convertFromMarkdownString(markdown, EDITOR_TRANSFORMERS);
         });
     };
 
     const convertNodeToMarkdown = () => {
-        // editorRef.current?.update(() => {
-        //     const root = $getRoot();
-
-        //     const markdown = $convertToMarkdownString(EDITOR_TRANSFORMERS);
-        //     const textNode = $createParagraphNode().append(
-        //         $createTextNode(markdown)
-        //     );
-        //     root.clear().append(textNode);
-        // });
         const editorValue: SerializedEditorState | undefined = getEditorValue();
         if (!editorValue) return;
         const editor_state = editorRef.current?.parseEditorState(editorValue);
@@ -183,7 +171,11 @@ const Editor: React.FC<EditorProps> = (props: EditorProps) => {
 
     return (
         <LexicalComposer initialConfig={initialConfig}>
-            {props.editMode ? <ToolbarPlugin /> : <></>}
+            {props.editMode ? (
+                <ToolbarPlugin onTogglePreview={setEditorMode} />
+            ) : (
+                <></>
+            )}
             <div className="relative">
                 <RichTextPlugin
                     contentEditable={
@@ -209,8 +201,9 @@ const Editor: React.FC<EditorProps> = (props: EditorProps) => {
                 <div className="flex pt-2 gap-1">
                     <Space />
                     <button
-                        className="px-2 py-1 rounded-md bg-indigo-700 text-white hover:bg-indigo-500"
+                        className="px-2 py-1 rounded-md bg-indigo-700 text-white hover:bg-indigo-500 disabled:bg-indigo-400"
                         onClick={() => onSave(editorState)}
+                        disabled={editorMode === "preview"}
                     >
                         Save
                     </button>

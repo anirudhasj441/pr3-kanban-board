@@ -20,7 +20,13 @@ import {
 
 import { editorStateStore } from "../../../stores";
 
-const ToolbarPlugin: React.FC = () => {
+interface ToolbarPluginProps {
+    onTogglePreview?: (mode: EditorMode) => void;
+}
+
+const ToolbarPlugin: React.FC<ToolbarPluginProps> = (
+    props: ToolbarPluginProps
+) => {
     const [editor] = useLexicalComposerContext();
     const [editorMode, setEditorMode] = useState<EditorMode>("edit");
 
@@ -43,7 +49,7 @@ const ToolbarPlugin: React.FC = () => {
                             ? node.getTextContent()
                             : "\n"
                     );
-                    const markdown = markdownList.join("");
+                    const markdown = markdownList.join("\n");
                     $convertFromMarkdownString(markdown, EDITOR_TRANSFORMERS);
                     editor.setEditable(false);
                 });
@@ -58,8 +64,9 @@ const ToolbarPlugin: React.FC = () => {
                 editor.setEditable(true);
             }
             setEditorMode(value);
+            if (props.onTogglePreview) props.onTogglePreview(value);
         },
-        [editor, getEditorValue, setEditorValue]
+        [editor, getEditorValue, setEditorValue, props]
     );
 
     // const handleBoldBtn = useCallback(() => {
