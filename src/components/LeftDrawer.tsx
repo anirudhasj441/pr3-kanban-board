@@ -70,21 +70,6 @@ const LeftDrawer: React.FC = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const handleSearchChanged = useCallback(
-        (value: string) => {
-            if (value === "") {
-                getProjects();
-                return;
-            }
-            const filterProject: Project[] | undefined = projects.filter(
-                (project: Project) =>
-                    project.title.toLowerCase().includes(value.toLowerCase())
-            );
-            if (filterProject) setProjects(filterProject);
-        },
-        [projects, getProjects]
-    );
-
     const onCreateProject = useCallback(() => {
         setDailogState(false);
         electronAPI.getProjects();
