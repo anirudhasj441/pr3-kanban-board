@@ -4,6 +4,7 @@ import { Icon } from "@iconify-icon/react/dist/iconify.mjs";
 import Space from "./Space";
 import Editor from "./Editor";
 import { EditorState } from "lexical";
+import MySlider from "./Slider";
 
 interface TaskDetailProps {
     task: Task;
@@ -56,7 +57,9 @@ const TaskDetail: React.FC<TaskDetailProps> = (props: TaskDetailProps) => {
                     />
                 </div>
             </div>
-            <div className="h-full bg-white rounded-md flex-grow shadow-md"></div>
+            <div className="h-full bg-white rounded-md flex-grow shadow-md p-3">
+                <MySlider label="Progress" value={[20]} />
+            </div>
         </div>
     );
 };
