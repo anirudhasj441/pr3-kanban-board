@@ -39,6 +39,13 @@ const electronAPI = {
     updateTaskName: (projectId: string, taskId: string, taskName: string) => {
         ipcRenderer.send("updateTaskName", projectId, taskId, taskName);
     },
+    updateTaskProgress: (
+        projectId: string,
+        taskId: string,
+        progress: number
+    ) => {
+        ipcRenderer.send("updateTaskProgress", projectId, taskId, progress);
+    },
     updateAllTasks: (projectId: string, tasks: Task[]) => {
         ipcRenderer.send("updateAllTasks", projectId, tasks);
     },

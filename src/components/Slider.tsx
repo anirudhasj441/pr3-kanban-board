@@ -8,32 +8,32 @@ interface MySliderProps {
     step?: number;
     disabled?: boolean;
     label?: string;
-    onChange?: (value: number[]) => void;
+    onChange?: (value: number) => void;
 }
 
 const MySlider: React.FC<MySliderProps> = (props: MySliderProps) => {
     const [value, setValue] = useState<number[]>(props.value);
 
     return (
-        <div className="flex gap-3 items-center">
-            <div className="labed text-slate-600">{props.label}</div>
+        <div className="">
+            <div className="label text-slate-600">{props.label}</div>
             <Slider.Root
                 defaultValue={value}
                 onValueChange={setValue}
-                onValueCommit={props.onChange}
+                onValueCommit={(value) => props.onChange?.(value[0])}
                 max={props.max}
                 min={props.min}
                 step={props.step}
                 disabled={props.disabled}
                 // value={value}
-                className="w-full h-1 flex relative items-center"
+                className="w-full h-1 flex relative items-center group/slider"
             >
                 <Slider.Track className="bg-slate-300 h-full w-full flex-grow rounded-md relative">
                     <Slider.Range className="bg-green-500 h-full absolute rounded-md"></Slider.Range>
                 </Slider.Track>
-                <Slider.Thumb className="rounded-full block w-4 h-4 bg-white shadow-md">
+                <Slider.Thumb className="rounded-full block size-4 hover:size-5 bg-white shadow-md group/slider-thumb z-top">
                     {0 < value[0] && 100 > value[0] ? (
-                        <div className="absolute top-[100%] left-1/2 text-slate-600 -translate-x-1/2">
+                        <div className="absolute top-[100%] left-1/2 text-slate-600 -translate-x-1/2 opacity-0 group-hover/slider-thumb:opacity-100">
                             {value[0]}
                         </div>
                     ) : null}

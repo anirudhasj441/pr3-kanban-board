@@ -5,10 +5,12 @@ import Space from "./Space";
 import Editor from "./Editor";
 import { EditorState } from "lexical";
 import MySlider from "./Slider";
+// import Seperator from "./Seperator";
 
 interface TaskDetailProps {
     task: Task;
     onUpdateDesc?: (editorState: EditorState | undefined) => void;
+    onUpdateProgress?: (value: number) => void;
 }
 
 const TaskDetail: React.FC<TaskDetailProps> = (props: TaskDetailProps) => {
@@ -57,8 +59,15 @@ const TaskDetail: React.FC<TaskDetailProps> = (props: TaskDetailProps) => {
                     />
                 </div>
             </div>
-            <div className="h-full bg-white rounded-md flex-grow shadow-md p-3">
-                <MySlider label="Progress" value={[20]} />
+            <div className="h-full rounded-md flex-grow p-3">
+                <div className="pb-5">
+                    <MySlider
+                        label="PROGRESS"
+                        value={[props.task.progress]}
+                        onChange={props.onUpdateProgress}
+                    />
+                </div>
+                {/* <Seperator className="my-2" /> */}
             </div>
         </div>
     );

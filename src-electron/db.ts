@@ -112,6 +112,18 @@ export default class DbModel {
         task.task = taskName;
     };
 
+    updateTaskProgress = (
+        projectId: string,
+        taskId: string,
+        progress: number
+    ) => {
+        const task: Task | undefined = this.getTask(projectId, taskId);
+
+        if (!task) return;
+
+        task.progress = progress;
+    };
+
     updateAllTasks = (projectId: string, tasks: Task[]) => {
         const project: Project | undefined = this.getProject(projectId);
         if (!project) return;
