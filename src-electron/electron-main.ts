@@ -122,6 +122,13 @@ app.whenReady().then(() => {
         }
     );
     ipcMain.on(
+        "updateTaskProgress",
+        (event: Electron.IpcMainEvent, projectId, taskId, progress) => {
+            dbModel.updateTaskProgress(projectId, taskId, progress);
+            dbModel.setJson();
+        }
+    );
+    ipcMain.on(
         "updateAllTasks",
         (event: IpcMainEvent, projectId: string, tasks: Task[]) => {
             dbModel.updateAllTasks(projectId, tasks);
