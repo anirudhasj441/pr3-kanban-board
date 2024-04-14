@@ -63,7 +63,7 @@ const TaskDetail: React.FC<TaskDetailProps> = (props: TaskDetailProps) => {
                 <div className="pb-5">
                     <MySlider
                         label="PROGRESS"
-                        value={[props.task.progress]}
+                        value={[!props.task.progress ? 0 : props.task.progress]}
                         onChange={props.onUpdateProgress}
                     />
                 </div>
