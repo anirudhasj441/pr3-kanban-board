@@ -135,6 +135,18 @@ app.whenReady().then(() => {
             dbModel.setJson();
         }
     );
+    ipcMain.on(
+        "createTag",
+        (
+            event: IpcMainEvent,
+            projectId: string,
+            tagLabel: string,
+            tagColor: string
+        ) => {
+            dbModel.createTag(projectId, tagLabel, tagColor);
+            dbModel.setJson();
+        }
+    );
 });
 
 app.on("window-all-closed", () => {

@@ -1,4 +1,4 @@
-import { DB, Project, Task, Status } from "../types";
+import { DB, Project, Task, Status, Tag } from "../types";
 import { BASE_PATH } from "./electron-main";
 import path from "path";
 import fs from "fs";
@@ -100,6 +100,28 @@ export default class DbModel {
         };
 
         project?.tasks.push(task);
+    };
+
+    /**
+     * Create tag for specified project
+     * @param projectId: id of a project for that tag is created
+     * @param tagLabel: label of tag
+     * @param tagColor: color of tag batch
+     */
+    createTag = (
+        projectId: string,
+        tagLabel: string,
+        tagColor: string
+    ): void => {
+        const project: Project | undefined = this.getProject(projectId);
+
+        const tag: Tag = {
+            _id: uuidv4(),
+            label: tagLabel,
+            color: tagColor,
+        };
+
+        project?.tags.push(tag);
     };
 
     updateTaskDesc = (

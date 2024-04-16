@@ -1,3 +1,7 @@
+/**
+ * APIs for connecting render process to Main electron process
+ */
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ipcRenderer } from "electron";
 import { Status, Task } from "../../types";
@@ -27,6 +31,13 @@ const electronAPI = {
         status: Status
     ): void => {
         ipcRenderer.send("createTask", projectId, taskTitle, status);
+    },
+    createTag: (
+        projectId: string,
+        tagLabel: string,
+        tagColor: string
+    ): void => {
+        ipcRenderer.send("craeteTag", projectId, tagLabel, tagColor);
     },
     deleteTask: (projectId: string, taskId: string): void => {
         ipcRenderer.send("deleteTask", projectId, taskId);

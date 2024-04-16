@@ -1,18 +1,26 @@
 import { ElementFormatType, TextFormatType } from "lexical";
 import React from "react";
 
+export interface Tag {
+    _id: string;
+    label: string;
+    color: string;
+}
+
 export interface Task {
     _id: string;
     task: string;
     desc: string;
     status: Status;
     progress: number;
+    tags: Tag[];
 }
 
 export interface Project {
     _id: string;
     title: string;
     tasks: Task[];
+    tags: Tag[];
 }
 
 export interface DB {
