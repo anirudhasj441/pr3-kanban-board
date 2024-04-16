@@ -76,6 +76,7 @@ export default class DbModel {
             _id: uuidv4(),
             title: title,
             tasks: [],
+            tags: [],
         };
 
         this.db.projects.push(project);
@@ -95,18 +96,27 @@ export default class DbModel {
             desc: "",
             status: status,
             progress: 0,
+            tags: [],
         };
 
         project?.tasks.push(task);
     };
 
-    updateTaskDesc = (projectId: string, taskId: string, desc: string) => {
+    updateTaskDesc = (
+        projectId: string,
+        taskId: string,
+        desc: string
+    ): void => {
         const task: Task | undefined = this.getTask(projectId, taskId);
         if (!task) return;
         task.desc = desc;
     };
 
-    updateTaskName = (projectId: string, taskId: string, taskName: string) => {
+    updateTaskName = (
+        projectId: string,
+        taskId: string,
+        taskName: string
+    ): void => {
         const task: Task | undefined = this.getTask(projectId, taskId);
         if (!task) return;
         task.task = taskName;
@@ -116,7 +126,7 @@ export default class DbModel {
         projectId: string,
         taskId: string,
         progress: number
-    ) => {
+    ): void => {
         const task: Task | undefined = this.getTask(projectId, taskId);
 
         if (!task) return;
@@ -124,13 +134,13 @@ export default class DbModel {
         task.progress = progress;
     };
 
-    updateAllTasks = (projectId: string, tasks: Task[]) => {
+    updateAllTasks = (projectId: string, tasks: Task[]): void => {
         const project: Project | undefined = this.getProject(projectId);
         if (!project) return;
         project.tasks = tasks;
     };
 
-    deleteTask = (projectId: string, taskId: string) => {
+    deleteTask = (projectId: string, taskId: string): void => {
         const project: Project | undefined = this.getProject(projectId);
 
         const taskIndex: number | undefined = project?.tasks.findIndex(
@@ -142,7 +152,7 @@ export default class DbModel {
         }
     };
 
-    deleteProject = (projectId: string) => {
+    deleteProject = (projectId: string): void => {
         const project: Project | undefined = this.getProject(projectId);
         const projects: Project[] = this.getAllProject();
         if (project) {
@@ -151,7 +161,7 @@ export default class DbModel {
         }
     };
 
-    projectExists = (projectId: string) => {
+    projectExists = (projectId: string): boolean => {
         const project: Project | undefined = this.getProject(projectId);
 
         return project !== undefined;
