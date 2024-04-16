@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ipcRenderer } from "electron";
-import { Status, Task } from "../types";
+import { Status, Task } from "../../types";
 
 const electronAPI = {
     close: (): void => {

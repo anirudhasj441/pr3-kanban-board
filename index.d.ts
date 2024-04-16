@@ -1,1 +1,1 @@
-declare const electronAPI: typeof import("./api").default;
+declare const electronAPI: typeof import("./src-electron/api").default;
