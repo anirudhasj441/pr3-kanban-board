@@ -1,10 +1,35 @@
 import { ElementFormatType, TextFormatType } from "lexical";
 import React from "react";
 
+export type TagColor =
+    | "red"
+    | "green"
+    | "yellow"
+    | "orange"
+    | "cyan"
+    | "sky"
+    | "blue"
+    | "indigo"
+    | "violet"
+    | "purple"
+    | "Fuchsia"
+    | "pink"
+    | "rose"
+    | "teal"
+    | "emerald"
+    | "green"
+    | "lime"
+    | "amber"
+    | "stone"
+    | "neutral"
+    | "zinc"
+    | "gray"
+    | "slate";
+
 export interface Tag {
     _id: string;
     label: string;
-    color: string;
+    color: TagColor;
 }
 
 export interface Task {
