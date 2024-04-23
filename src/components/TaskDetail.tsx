@@ -5,7 +5,8 @@ import Space from "./Space";
 import Editor from "./Editor";
 import { EditorState } from "lexical";
 import MySlider from "./Slider";
-// import Seperator from "./Seperator";
+import Seperator from "./Seperator";
+// import Tag from "./Tag";
 
 interface TaskDetailProps {
     task: Task;
@@ -59,7 +60,7 @@ const TaskDetail: React.FC<TaskDetailProps> = (props: TaskDetailProps) => {
                     />
                 </div>
             </div>
-            <div className="h-full rounded-md flex-grow p-3">
+            <div className="h-full rounded-md w-[40%] p-3">
                 <div className="pb-5">
                     <MySlider
                         label="PROGRESS"
@@ -67,7 +68,21 @@ const TaskDetail: React.FC<TaskDetailProps> = (props: TaskDetailProps) => {
                         onChange={props.onUpdateProgress}
                     />
                 </div>
-                {/* <Seperator className="my-2" /> */}
+                <Seperator className="my-3" />
+                <div className="">
+                    <div className="text-slate-600">TAGS</div>
+                    <div className="flex gap-2 items-center flex-wrap">
+                        <button className="bg-gray-600 text-white text-xs px-2 py-1 rounded-full flex gap-1 items-center hover:bg-gray-500 active:bg-gray-700">
+                            <Icon
+                                icon="material-symbols:add"
+                                className="block"
+                                width={15}
+                                height={15}
+                            />
+                            <div className="">Add tag</div>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     );
