@@ -6,6 +6,7 @@ interface InputFieldProp {
     label: string;
     autoFocus?: boolean | undefined;
     value?: string;
+    icon?: React.ReactElement;
     onValueChange: (value: string) => void;
     onKeyDown?: KeyboardEventHandler<HTMLInputElement> | undefined;
 }
@@ -49,6 +50,7 @@ const InputField: React.FC<InputFieldProp> = (props) => {
                 pe-2
             "
         >
+            <div className="icon ml-1">{props.icon ? props.icon : null}</div>
             <input
                 type="text"
                 id={props.id}
@@ -73,7 +75,8 @@ const InputField: React.FC<InputFieldProp> = (props) => {
             />
             <label
                 htmlFor="search-input"
-                className="
+                className={[
+                    `
                     absolute
                     px-2
                     ease-in-out
@@ -82,24 +85,27 @@ const InputField: React.FC<InputFieldProp> = (props) => {
                     z-9
 
                     top-2
-                    left-0
                     text-[12px]
                     text-slate-500
                     -translate-y-1/2
-                    bg-transperant
+                    bg-transparent
 
                     peer-focus:top-2
                     peer-focus:left-0
                     peer-focus:text-[12px]
                     peer-focus:text-indigo-700
-                    peer-focus:bg-transperant
+                    peer-focus:bg-transparent
 
                     peer-placeholder-shown:top-1/2
-                    peer-placeholder-shown:left-0
+
                     peer-placeholder-shown:text-slate-500
                     peer-placeholder-shown:text-base
                     peer-placeholder-shown:bg-transparent
-                "
+                `,
+                    props.icon
+                        ? "left-[1.2rem] peer-placeholder-shown:left-[1.2rem]"
+                        : "left-0 peer-placeholder-shown:left-0",
+                ].join(" ")}
             >
                 {props.label}
             </label>
