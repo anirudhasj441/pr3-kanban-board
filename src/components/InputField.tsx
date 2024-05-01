@@ -3,7 +3,7 @@ import { useState, useRef } from "react";
 
 interface InputFieldProp {
     id: string;
-    label: string;
+    label?: string;
     autoFocus?: boolean | undefined;
     value?: string;
     icon?: React.ReactElement;
@@ -50,7 +50,6 @@ const InputField: React.FC<InputFieldProp> = (props) => {
                 pe-2
             "
         >
-            <div className="icon ml-1">{props.icon ? props.icon : null}</div>
             <input
                 type="text"
                 id={props.id}
@@ -67,16 +66,21 @@ const InputField: React.FC<InputFieldProp> = (props) => {
                     bg-transparent
                     placeholder:text-transparent
                     z-10
+                    order-2
                 "
                 value={value}
                 onChange={valueChanged}
                 placeholder="seacrh"
                 onKeyDown={props.onKeyDown ? props.onKeyDown : undefined}
             />
-            <label
-                htmlFor="search-input"
-                className={[
-                    `
+            <div className="icon ml-1 peer-focus:text-indigo-700">
+                {props.icon ? props.icon : null}
+            </div>
+            {props.label ? (
+                <label
+                    htmlFor="search-input"
+                    className={[
+                        `
                     absolute
                     px-2
                     ease-in-out
@@ -102,13 +106,14 @@ const InputField: React.FC<InputFieldProp> = (props) => {
                     peer-placeholder-shown:text-base
                     peer-placeholder-shown:bg-transparent
                 `,
-                    props.icon
-                        ? "left-[1.2rem] peer-placeholder-shown:left-[1.2rem]"
-                        : "left-0 peer-placeholder-shown:left-0",
-                ].join(" ")}
-            >
-                {props.label}
-            </label>
+                        props.icon
+                            ? "left-[1.5rem] peer-placeholder-shown:left-[1.5rem]"
+                            : "left-0 peer-placeholder-shown:left-0",
+                    ].join()}
+                >
+                    {props.label}
+                </label>
+            ) : null}
         </div>
     );
 };
