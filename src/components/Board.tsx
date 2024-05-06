@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Board component
+ *
+ * @author Anirudha Jadhav <anirudhasj441@gmail.com>
+ */
+
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { Status, Task } from "../../types";
 import Space from "./Space";
@@ -21,11 +27,17 @@ interface BoardProps {
     color_class?: string | undefined;
 }
 
+/**
+ * Board component container for task
+ */
 const Board: React.FC<BoardProps> = (props: BoardProps) => {
+    // refs
     const effectRan = useRef(false);
 
+    // states
     const [showForm, setShowForm] = useState<boolean>(false);
 
+    // callbacks
     const createTask = useCallback(
         (taskTitle: string) => {
             if (taskTitle === "") return;
@@ -72,6 +84,7 @@ const Board: React.FC<BoardProps> = (props: BoardProps) => {
         [props]
     );
 
+    // drag and drop
     const { setNodeRef } = useDroppable({
         id: props.status,
         data: {
@@ -80,6 +93,7 @@ const Board: React.FC<BoardProps> = (props: BoardProps) => {
         },
     });
 
+    // useEffect
     useEffect(() => {
         // if (effectRan.current) {
 
@@ -95,6 +109,7 @@ const Board: React.FC<BoardProps> = (props: BoardProps) => {
         }
     }, [showForm]);
 
+    // template
     return (
         <div className="flex flex-col h-full flex-1 gap-5">
             <div
@@ -192,6 +207,7 @@ const Board: React.FC<BoardProps> = (props: BoardProps) => {
     );
 };
 
+// default props
 Board.defaultProps = {
     color_class: "border-indigo-700",
 };

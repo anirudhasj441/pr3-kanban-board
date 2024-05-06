@@ -1,3 +1,9 @@
+/**
+ * @fileoverview declaration of types
+ *
+ * @author Anirudha Jadhav <anirudhasj441@gmail.com>
+ */
+
 import { ElementFormatType, TextFormatType } from "lexical";
 import React from "react";
 

@@ -1,3 +1,9 @@
+/**
+ * @fileoverview creating zustand store.
+ *
+ * @author Anirudha Jadhav <anirudhasj441@gmail.com>
+ */
+
 import { SerializedEditorState } from "lexical";
 import { create, UseBoundStore, StoreApi } from "zustand";
 

@@ -1,5 +1,7 @@
 /**
- * APIs for connecting render process to Main electron process
+ * @fileoverview APIs for connecting render process to Main electron process
+ *
+ * @author Anirudha Jadhav <anirudhasj441@gmail.com>
  */
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
