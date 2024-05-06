@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Task } from "../../types";
+import { Tag, Task } from "../../types";
 import Space from "./Space";
 import { Icon } from "@iconify-icon/react/dist/iconify.mjs";
 import * as Dialog from "@radix-ui/react-dialog";
@@ -8,8 +8,8 @@ import Seperator from "./Seperator";
 import { EditorState } from "lexical";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import MyScrollArea from "./ScrollArea";
 import InputField from "./InputField";
+import TagBadge from "./Tag";
 
 interface TaskCardProps {
     task: Task;
@@ -20,6 +20,7 @@ interface TaskCardProps {
         editorState: EditorState | undefined
     ) => void;
     onUpdateTaskName?: (taskId: string, taskName: string) => void;
+    onUpdateTaskProgress?: (taskId: string, progress: number) => void;
 }
 
 const TaskCard: React.FC<TaskCardProps> = (props: TaskCardProps) => {
@@ -92,10 +93,17 @@ const TaskCard: React.FC<TaskCardProps> = (props: TaskCardProps) => {
             {...attributes}
             {...listeners}
             className={[
-                "bg-white px-3 py-2 rounded-md shadow-md flex items-start group/task task-card cursor-grab",
+                "bg-white px-3 py-2 rounded-md shadow-md flex items-start group/task task-card cursor-grab relative",
                 props.grabbed ? "cursor-grabbing" : "",
             ].join(" ")}
         >
+            <div
+                className={[
+                    "absolute bottom-0 bg-green-500 h-1 left-0 rounded-bl-md",
+                    props.task.progress === 100 ? "rounded-br-md" : "",
+                ].join(" ")}
+                style={{ width: `${props.task.progress}%` }}
+            ></div>
             {editTaskMode ? (
                 <div onBlur={() => setEditTaskMode(false)}>
                     <InputField
@@ -119,10 +127,19 @@ const TaskCard: React.FC<TaskCardProps> = (props: TaskCardProps) => {
             ) : (
                 <>
                     <div
-                        className="text-sm"
+                        className="text-sm flex flex-col gap-2"
                         onDoubleClick={() => setEditTaskMode(true)}
                     >
-                        {props.task.task}
+                        <div>{props.task.task}</div>
+                        <div className="w-full flex gap-1 flex-wrap">
+                            {props.task.tags.map((tag: Tag) => (
+                                <TagBadge
+                                    key={tag._id}
+                                    label={tag.label}
+                                    color={tag.color}
+                                ></TagBadge>
+                            ))}
+                        </div>
                     </div>
                     <Space />
                     <Dialog.Root
@@ -143,8 +160,9 @@ const TaskCard: React.FC<TaskCardProps> = (props: TaskCardProps) => {
                             className="fixed backdrop-blur-sm transition-all duration-900 ease-linear z-10"
                             style={{ inset: 0 }}
                         />
-                        <Dialog.Content className="fixed top-10 left-1/2 -translate-x-1/2 bg-gray-100 py-4 z-20 rounded-md w-[80%] h-[90svh] shadow-lg cursor-auto flex flex-col">
-                            <MyScrollArea className="px-4">
+                        <Dialog.Content className="fixed top-10 left-1/2 -translate-x-1/2 bg-gray-100 z-20 rounded-md w-[80%] h-[90svh] shadow-lg cursor-auto flex flex-col">
+                            {/* <MyScrollArea className="px-4 flex flex-col"> */}
+                            <div className="h-full flex flex-col p-4">
                                 <Dialog.Title className="flex">
                                     <div className="text-2xl text-slate-600">
                                         {props.task.task}
@@ -190,9 +208,16 @@ const TaskCard: React.FC<TaskCardProps> = (props: TaskCardProps) => {
                                                 editorState
                                             )
                                         }
+                                        onUpdateProgress={(progress: number) =>
+                                            props.onUpdateTaskProgress?.(
+                                                props.task._id,
+                                                progress
+                                            )
+                                        }
                                     />
                                 </div>
-                            </MyScrollArea>
+                            </div>
+                            {/* </MyScrollArea> */}
                         </Dialog.Content>
                     </Dialog.Root>
                 </>

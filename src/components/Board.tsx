@@ -64,6 +64,14 @@ const Board: React.FC<BoardProps> = (props: BoardProps) => {
         [props]
     );
 
+    const handleOnUpdateTaskProgress = useCallback(
+        (taskId: string, progress: number) => {
+            electronAPI.updateTaskProgress(props.project_id, taskId, progress);
+            props.getTasks();
+        },
+        [props]
+    );
+
     const { setNodeRef } = useDroppable({
         id: props.status,
         data: {
@@ -136,6 +144,9 @@ const Board: React.FC<BoardProps> = (props: BoardProps) => {
                                 onDelete={handleOnDelete}
                                 onUpdateDesc={handleOnUpdateTaskDesc}
                                 onUpdateTaskName={handleOnUpdateTaskName}
+                                onUpdateTaskProgress={
+                                    handleOnUpdateTaskProgress
+                                }
                             />
                         ))}
                     </SortableContext>

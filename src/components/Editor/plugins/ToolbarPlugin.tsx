@@ -20,7 +20,13 @@ import {
 
 import { editorStateStore } from "../../../stores";
 
-const ToolbarPlugin: React.FC = () => {
+interface ToolbarPluginProps {
+    onTogglePreview?: (mode: EditorMode) => void;
+}
+
+const ToolbarPlugin: React.FC<ToolbarPluginProps> = (
+    props: ToolbarPluginProps
+) => {
     const [editor] = useLexicalComposerContext();
     const [editorMode, setEditorMode] = useState<EditorMode>("edit");
 
@@ -37,20 +43,18 @@ const ToolbarPlugin: React.FC = () => {
                     const editorValue: SerializedEditorState =
                         editorState.toJSON();
                     setEditorValue(editorValue);
-                    console.log("NODES: ", nodes);
                     const markdownList = nodes.map((node: LexicalNode) =>
                         node.getTextContent().trim().length > 0
                             ? node.getTextContent()
                             : "\n"
                     );
-                    const markdown = markdownList.join("");
+                    const markdown = markdownList.join("\n");
                     $convertFromMarkdownString(markdown, EDITOR_TRANSFORMERS);
                     editor.setEditable(false);
                 });
             } else {
                 const editorValue: SerializedEditorState | undefined =
                     getEditorValue();
-                console.log("nodes: ", editorValue);
                 if (!editorValue) return;
                 const editor_state: EditorState =
                     editor.parseEditorState(editorValue);
@@ -58,8 +62,9 @@ const ToolbarPlugin: React.FC = () => {
                 editor.setEditable(true);
             }
             setEditorMode(value);
+            if (props.onTogglePreview) props.onTogglePreview(value);
         },
-        [editor, getEditorValue, setEditorValue]
+        [editor, getEditorValue, setEditorValue, props]
     );
 
     // const handleBoldBtn = useCallback(() => {
