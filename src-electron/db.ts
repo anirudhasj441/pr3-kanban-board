@@ -196,7 +196,6 @@ export default class DbModel {
     attachTagToTask = (projectId: string, taskId: string, tag: Tag): void => {
         const task: Task | undefined = this.getTask(projectId, taskId);
         if (!task) return;
-        console.log("inside attache tag function!!!");
         if (!task.tags) {
             // initialize empty tags if not exists
             task.tags = [];
@@ -218,11 +217,9 @@ export default class DbModel {
     ): void => {
         const task: Task | undefined = this.getTask(projectId, taskId);
         if (!task) return;
-        console.log("inside detach tag function!!!");
         const tagIndex: number | undefined = task.tags?.findIndex(
             (tag: Tag) => tag._id === aTag._id
         );
-        console.log(tagIndex);
         if (typeof tagIndex !== "undefined") {
             task.tags.splice(tagIndex, 1);
         }

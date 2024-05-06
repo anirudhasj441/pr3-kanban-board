@@ -36,7 +36,6 @@ export const editorStateStore: UseBoundStore<
 > = create<EditorStateStoreState & EditorStateStoreAction>()((set) => ({
     editorValue: undefined,
     setEditorValue: (editorValue) => {
-        console.log("setting editorValue: ", editorValue);
         set(() => ({ editorValue: editorValue }));
     },
     getEditorValue: () => editorStateStore.getState().editorValue,
