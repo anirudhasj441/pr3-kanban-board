@@ -134,6 +134,7 @@ const TaskCard: React.FC<TaskCardProps> = (props: TaskCardProps) => {
                         <div className="w-full flex gap-1 flex-wrap">
                             {props.task.tags.map((tag: Tag) => (
                                 <TagBadge
+                                    key={tag._id}
                                     label={tag.label}
                                     color={tag.color}
                                 ></TagBadge>
