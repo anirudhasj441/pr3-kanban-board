@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Task } from "../../types";
+import { Tag, Task } from "../../types";
 import Space from "./Space";
 import { Icon } from "@iconify-icon/react/dist/iconify.mjs";
 import * as Dialog from "@radix-ui/react-dialog";
@@ -9,6 +9,7 @@ import { EditorState } from "lexical";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import InputField from "./InputField";
+import TagBadge from "./Tag";
 
 interface TaskCardProps {
     task: Task;
@@ -126,10 +127,18 @@ const TaskCard: React.FC<TaskCardProps> = (props: TaskCardProps) => {
             ) : (
                 <>
                     <div
-                        className="text-sm"
+                        className="text-sm flex flex-col gap-2"
                         onDoubleClick={() => setEditTaskMode(true)}
                     >
-                        {props.task.task}
+                        <div>{props.task.task}</div>
+                        <div className="w-full flex gap-1 flex-wrap">
+                            {props.task.tags.map((tag: Tag) => (
+                                <TagBadge
+                                    label={tag.label}
+                                    color={tag.color}
+                                ></TagBadge>
+                            ))}
+                        </div>
                     </div>
                     <Space />
                     <Dialog.Root

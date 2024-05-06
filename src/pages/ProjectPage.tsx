@@ -1,5 +1,11 @@
 // import React, { useCallback, useEffect, useState, useRef } from "react";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+    createContext,
+    useCallback,
+    useEffect,
+    useRef,
+    useState,
+} from "react";
 import { useParams, useNavigate, NavigateFunction } from "react-router-dom";
 import Board from "../components/Board";
 import {
@@ -15,6 +21,9 @@ import {
 import { arrayMove } from "@dnd-kit/sortable";
 import { Task } from "../../types";
 import TaskCard from "../components/TaskCard";
+
+// custom context
+export const ProjectContext = createContext<string | undefined>(undefined);
 
 const ProjectPage: React.FC = () => {
     const effectRan = useRef(false);
@@ -43,6 +52,7 @@ const ProjectPage: React.FC = () => {
 
     const handleGetTasks = useCallback(
         (tasks: Task[]) => {
+            console.log("getting tasks: ", tasks);
             setTasks(tasks);
         },
         [setTasks]
@@ -135,56 +145,57 @@ const ProjectPage: React.FC = () => {
     );
 
     return (
-        <div className="flex gap-5 h-full">
-            {project_id ? (
-                <DndContext
-                    onDragEnd={handleDragEnd}
-                    onDragStart={handleDragStart}
-                    onDragOver={handleDragOver}
-                    sensors={sensors}
-                >
-                    <Board
-                        title="Todo"
-                        project_id={project_id}
-                        status="todo"
-                        tasks={tasks.filter(
-                            (task: Task) => task.status === "todo"
-                        )}
-                        getTasks={getTasks}
-                        color_class="border-gray-500"
-                    />
-                    <Board
-                        title="In Progress"
-                        project_id={project_id}
-                        status="doing"
-                        getTasks={getTasks}
-                        tasks={tasks.filter(
-                            (task: Task) => task.status === "doing"
-                        )}
-                        color_class="border-indigo-700"
-                    />
-                    <Board
-                        title="Done"
-                        project_id={project_id}
-                        status="done"
-                        getTasks={() => getTasks()}
-                        tasks={tasks.filter(
-                            (task: Task) => task.status === "done"
-                        )}
-                        color_class="border-green-500"
-                    />
-                    <DragOverlay>
-                        {activeTask && (
-                            <TaskCard
-                                task={activeTask}
-                                grabbed={true}
-                            ></TaskCard>
-                        )}
-                    </DragOverlay>
-                </DndContext>
-            ) : null}
-        </div>
+        <ProjectContext.Provider value={project_id}>
+            <div className="flex gap-5 h-full">
+                {project_id ? (
+                    <DndContext
+                        onDragEnd={handleDragEnd}
+                        onDragStart={handleDragStart}
+                        onDragOver={handleDragOver}
+                        sensors={sensors}
+                    >
+                        <Board
+                            title="Todo"
+                            project_id={project_id}
+                            status="todo"
+                            tasks={tasks.filter(
+                                (task: Task) => task.status === "todo"
+                            )}
+                            getTasks={getTasks}
+                            color_class="border-gray-500"
+                        />
+                        <Board
+                            title="In Progress"
+                            project_id={project_id}
+                            status="doing"
+                            getTasks={getTasks}
+                            tasks={tasks.filter(
+                                (task: Task) => task.status === "doing"
+                            )}
+                            color_class="border-indigo-700"
+                        />
+                        <Board
+                            title="Done"
+                            project_id={project_id}
+                            status="done"
+                            getTasks={() => getTasks()}
+                            tasks={tasks.filter(
+                                (task: Task) => task.status === "done"
+                            )}
+                            color_class="border-green-500"
+                        />
+                        <DragOverlay>
+                            {activeTask && (
+                                <TaskCard
+                                    task={activeTask}
+                                    grabbed={true}
+                                ></TaskCard>
+                            )}
+                        </DragOverlay>
+                    </DndContext>
+                ) : null}
+            </div>
+        </ProjectContext.Provider>
     );
 };
-
 export default ProjectPage;

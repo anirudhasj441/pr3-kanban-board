@@ -3,9 +3,10 @@ import { useState, useRef } from "react";
 
 interface InputFieldProp {
     id: string;
-    label: string;
+    label?: string;
     autoFocus?: boolean | undefined;
     value?: string;
+    icon?: React.ReactElement;
     onValueChange: (value: string) => void;
     onKeyDown?: KeyboardEventHandler<HTMLInputElement> | undefined;
 }
@@ -65,15 +66,21 @@ const InputField: React.FC<InputFieldProp> = (props) => {
                     bg-transparent
                     placeholder:text-transparent
                     z-10
+                    order-2
                 "
                 value={value}
                 onChange={valueChanged}
                 placeholder="seacrh"
                 onKeyDown={props.onKeyDown ? props.onKeyDown : undefined}
             />
-            <label
-                htmlFor="search-input"
-                className="
+            <div className="icon ml-1 peer-focus:text-indigo-700">
+                {props.icon ? props.icon : null}
+            </div>
+            {props.label ? (
+                <label
+                    htmlFor="search-input"
+                    className={[
+                        `
                     absolute
                     px-2
                     ease-in-out
@@ -82,27 +89,31 @@ const InputField: React.FC<InputFieldProp> = (props) => {
                     z-9
 
                     top-2
-                    left-0
                     text-[12px]
                     text-slate-500
                     -translate-y-1/2
-                    bg-transperant
+                    bg-transparent
 
                     peer-focus:top-2
                     peer-focus:left-0
                     peer-focus:text-[12px]
                     peer-focus:text-indigo-700
-                    peer-focus:bg-transperant
+                    peer-focus:bg-transparent
 
                     peer-placeholder-shown:top-1/2
-                    peer-placeholder-shown:left-0
+
                     peer-placeholder-shown:text-slate-500
                     peer-placeholder-shown:text-base
                     peer-placeholder-shown:bg-transparent
-                "
-            >
-                {props.label}
-            </label>
+                `,
+                        props.icon
+                            ? "left-[1.5rem] peer-placeholder-shown:left-[1.5rem]"
+                            : "left-0 peer-placeholder-shown:left-0",
+                    ].join()}
+                >
+                    {props.label}
+                </label>
+            ) : null}
         </div>
     );
 };

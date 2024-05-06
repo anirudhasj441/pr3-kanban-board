@@ -1,4 +1,4 @@
-import { DB, Project, Task, Status } from "../types";
+import { DB, Project, Task, Status, Tag, TagColor } from "../types";
 import { BASE_PATH } from "./electron-main";
 import path from "path";
 import fs from "fs";
@@ -71,11 +71,40 @@ export default class DbModel {
         return tasks;
     };
 
+    /**
+     * Returns tags of project
+     *
+     * @param projectId - project id of project.
+     * @returns list of tags if present else empty list
+     */
+    getAllTags = (projectId: string): Tag[] => {
+        const project: Project | undefined = this.getProject(projectId);
+
+        const tags: Tag[] | undefined = project?.tags;
+
+        return tags || [];
+    };
+
+    /**
+     * returns tag attached to given task
+     * @param projectId - id of project
+     * @param taskId - id of task
+     * @returns list of tags if present else empty list
+     */
+    getTaskTags = (projectId: string, taskId: string): Tag[] => {
+        const task: Task | undefined = this.getTask(projectId, taskId);
+
+        const tags: Tag[] | undefined = task?.tags;
+
+        return tags || [];
+    };
+
     createProject = (title: string): void => {
         const project: Project = {
             _id: uuidv4(),
             title: title,
             tasks: [],
+            tags: [],
         };
 
         this.db.projects.push(project);
@@ -95,18 +124,51 @@ export default class DbModel {
             desc: "",
             status: status,
             progress: 0,
+            tags: [],
         };
 
         project?.tasks.push(task);
     };
 
-    updateTaskDesc = (projectId: string, taskId: string, desc: string) => {
+    /**
+     * Create tag for specified project
+     * @param projectId: id of a project for that tag is created
+     * @param tagLabel: label of tag
+     * @param tagColor: color of tag batch
+     */
+    createTag = (
+        projectId: string,
+        tagLabel: string,
+        tagColor: TagColor
+    ): void => {
+        const project: Project | undefined = this.getProject(projectId);
+        if (!project) return;
+        const tag: Tag = {
+            _id: uuidv4(),
+            label: tagLabel,
+            color: tagColor,
+        };
+        if (!project?.tags) {
+            project.tags = [];
+        }
+        project?.tags.push(tag);
+    };
+
+    updateTaskDesc = (
+        projectId: string,
+        taskId: string,
+        desc: string
+    ): void => {
         const task: Task | undefined = this.getTask(projectId, taskId);
         if (!task) return;
         task.desc = desc;
     };
 
-    updateTaskName = (projectId: string, taskId: string, taskName: string) => {
+    updateTaskName = (
+        projectId: string,
+        taskId: string,
+        taskName: string
+    ): void => {
         const task: Task | undefined = this.getTask(projectId, taskId);
         if (!task) return;
         task.task = taskName;
@@ -116,7 +178,7 @@ export default class DbModel {
         projectId: string,
         taskId: string,
         progress: number
-    ) => {
+    ): void => {
         const task: Task | undefined = this.getTask(projectId, taskId);
 
         if (!task) return;
@@ -124,13 +186,55 @@ export default class DbModel {
         task.progress = progress;
     };
 
-    updateAllTasks = (projectId: string, tasks: Task[]) => {
+    /**
+     * Attach tag to given task in given project
+     * @param projectId - id of project
+     * @param taskId - id of tag
+     * @param tag - tag which to be attached
+     * @returns
+     */
+    attachTagToTask = (projectId: string, taskId: string, tag: Tag): void => {
+        const task: Task | undefined = this.getTask(projectId, taskId);
+        if (!task) return;
+        console.log("inside attache tag function!!!");
+        if (!task.tags) {
+            // initialize empty tags if not exists
+            task.tags = [];
+        }
+        task.tags.push(tag);
+    };
+
+    /**
+     * detach tag from given task in given project
+     * @param projectId - id of project
+     * @param taskId - id of task
+     * @param aTag - tag to be detached
+     * @returns
+     */
+    detachTagFromTask = (
+        projectId: string,
+        taskId: string,
+        aTag: Tag
+    ): void => {
+        const task: Task | undefined = this.getTask(projectId, taskId);
+        if (!task) return;
+        console.log("inside detach tag function!!!");
+        const tagIndex: number | undefined = task.tags?.findIndex(
+            (tag: Tag) => tag._id === aTag._id
+        );
+        console.log(tagIndex);
+        if (typeof tagIndex !== "undefined") {
+            task.tags.splice(tagIndex, 1);
+        }
+    };
+
+    updateAllTasks = (projectId: string, tasks: Task[]): void => {
         const project: Project | undefined = this.getProject(projectId);
         if (!project) return;
         project.tasks = tasks;
     };
 
-    deleteTask = (projectId: string, taskId: string) => {
+    deleteTask = (projectId: string, taskId: string): void => {
         const project: Project | undefined = this.getProject(projectId);
 
         const taskIndex: number | undefined = project?.tasks.findIndex(
@@ -142,7 +246,7 @@ export default class DbModel {
         }
     };
 
-    deleteProject = (projectId: string) => {
+    deleteProject = (projectId: string): void => {
         const project: Project | undefined = this.getProject(projectId);
         const projects: Project[] = this.getAllProject();
         if (project) {
@@ -151,7 +255,7 @@ export default class DbModel {
         }
     };
 
-    projectExists = (projectId: string) => {
+    projectExists = (projectId: string): boolean => {
         const project: Project | undefined = this.getProject(projectId);
 
         return project !== undefined;
