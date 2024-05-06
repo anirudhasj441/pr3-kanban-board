@@ -1,5 +1,11 @@
-import React, { useCallback, useState } from "react";
-import { Task } from "../../types";
+import React, {
+    useCallback,
+    useContext,
+    useEffect,
+    useRef,
+    useState,
+} from "react";
+import { Tag, Task } from "../../types";
 import { Icon } from "@iconify-icon/react/dist/iconify.mjs";
 import Space from "./Space";
 import Editor from "./Editor";
@@ -8,6 +14,8 @@ import MySlider from "./Slider";
 import Seperator from "./Seperator";
 import * as Dialog from "@radix-ui/react-dialog";
 import CreateTagForm from "./Tag/CreateTagForm";
+import { ProjectContext } from "../pages/ProjectPage";
+import TagBadge from "./Tag";
 
 interface TaskDetailProps {
     task: Task;
@@ -15,9 +23,22 @@ interface TaskDetailProps {
     onUpdateProgress?: (value: number) => void;
 }
 
+const isDev = !process.env.NODE_ENV || process.env.NODE_ENV === "development";
+
 const TaskDetail: React.FC<TaskDetailProps> = (props: TaskDetailProps) => {
+    // refs
+    const effectRan = useRef<boolean>(false);
+
+    // context Value
+    const projectId: string | undefined = useContext(ProjectContext);
+
+    // states
     const [editMode, setEditMode] = useState<boolean>(false);
     const [createTagForm, setCreateTagForm] = useState<boolean>(false);
+    const [tags, setTags] = useState<Tag[]>([]);
+    const [newTagFlag, setNewTagFlag] = useState<boolean>(false);
+
+    // callbacks
     const onSave = useCallback(
         (editorState: EditorState | undefined) => {
             props.onUpdateDesc && props.onUpdateDesc(editorState);
@@ -27,6 +48,72 @@ const TaskDetail: React.FC<TaskDetailProps> = (props: TaskDetailProps) => {
         },
         [props]
     );
+
+    const tagAttached = useCallback(
+        (aTag: Tag): boolean => {
+            const result = props.task.tags?.find(
+                (tag: Tag) => tag._id == aTag._id
+            );
+            console.log(result, ": ", result !== undefined);
+            return result !== undefined;
+        },
+        [props]
+    );
+
+    const onTagSelect = useCallback(
+        (tag: Tag) => {
+            if (!projectId) return;
+            console.log("tag is attached: ", tagAttached(tag));
+            if (!tagAttached(tag)) {
+                console.log("Attaching...");
+                electronAPI.attachTagToTask(projectId, props.task._id, tag);
+            } else {
+                console.log("Detaching...");
+                electronAPI.detachTagFromTask(projectId, props.task._id, tag);
+            }
+        },
+        [props, projectId, tagAttached]
+    );
+
+    /**
+     * Slot for receive tags from Electron Process
+     */
+    const handleGetAllTags = useCallback((tags: Tag[]) => {
+        console.log("fetching Tags!!!", tags);
+        setTags(tags);
+    }, []);
+
+    /**
+     * Slot for handle tag label change
+     */
+    const handleLabelChange = useCallback(
+        (label: string) => {
+            if ("" === label.trim()) {
+                setNewTagFlag(false);
+                if (projectId) electronAPI.getAllTags(projectId);
+                return;
+            }
+            const filterTags: Tag[] = tags.filter((tag: Tag) =>
+                tag.label.toLowerCase().includes(label.toLowerCase())
+            );
+
+            setTags(filterTags);
+            setNewTagFlag(filterTags.length === 0);
+        },
+        [tags, setTags, projectId]
+    );
+
+    // useEffect
+    useEffect(() => {
+        if (effectRan.current || !isDev) {
+            if (!projectId) return;
+            electronAPI.getAllTags(projectId);
+            electronAPI.receive("getAllTags", handleGetAllTags);
+        }
+        return () => {
+            effectRan.current = true;
+        };
+    }, [handleGetAllTags, projectId]);
 
     return (
         <div className="pt-3 h-full flex gap-4 w-full">
@@ -94,46 +181,61 @@ const TaskDetail: React.FC<TaskDetailProps> = (props: TaskDetailProps) => {
                             />
                             <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gray-100 z-20 rounded-md w-[300px] shadow-lg cursor-auto flex flex-col">
                                 <div className="h-full flex flex-col p-4">
-                                    {/* <Dialog.Title className="flex">
-                                        <div className="text-2xl text-slate-600">
-                                            Add tag
-                                        </div>
-                                        <Space></Space>
-
-                                        <button
-                                            className="hover:bg-gray-300 p-1 rounded-md transition duration-800 ease-in-out"
-                                            onClick={() =>
-                                                setCreateTagForm(false)
-                                            }
-                                        >
-                                            <Icon
-                                                icon="material-symbols:close"
-                                                width={25}
-                                                height={25}
-                                                className="block text-slate-600"
-                                            />
-                                        </button>
-                                    </Dialog.Title> */}
-                                    {/* <Seperator /> */}
-                                    <CreateTagForm />
-                                    <Seperator className="mt-3" />
-                                    <ul className="tag-list py-2">
-                                        <li className="flex gap-1 hover:bg-gray-300 p-2 active:bg-gray-400 rounded-md">
-                                            <Icon
-                                                icon="material-symbols:circle"
-                                                className="block"
-                                                width={25}
-                                                height={25}
-                                                style={{
-                                                    color: "red",
-                                                }}
-                                            />
-                                            <div className="text-md">bug</div>
-                                        </li>
-                                    </ul>
+                                    <CreateTagForm
+                                        ovLabelChange={handleLabelChange}
+                                        createTagMode={newTagFlag}
+                                    />
+                                    {/* <Seperator className="mt-3" /> */}
+                                    {tags.length > 0 ? (
+                                        <ul className="tag-list py-2">
+                                            {tags.map((tag: Tag) => (
+                                                <li
+                                                    key={tag._id}
+                                                    onClick={() =>
+                                                        onTagSelect(tag)
+                                                    }
+                                                    className="flex gap-1 hover:bg-gray-300 p-2 active:bg-gray-400 rounded-md"
+                                                >
+                                                    {tagAttached(tag) ? (
+                                                        <Icon
+                                                            icon="material-symbols:check-circle"
+                                                            className="block"
+                                                            width={25}
+                                                            height={25}
+                                                            style={{
+                                                                color: tag.color,
+                                                            }}
+                                                        />
+                                                    ) : (
+                                                        <Icon
+                                                            icon="material-symbols:circle"
+                                                            className="block"
+                                                            width={25}
+                                                            height={25}
+                                                            style={{
+                                                                color: tag.color,
+                                                            }}
+                                                        />
+                                                    )}
+                                                    <div className="text-md">
+                                                        {tag.label}
+                                                    </div>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    ) : null}
                                 </div>
                             </Dialog.Content>
                         </Dialog.Root>
+                        {props.task.tags.map((tag: Tag) => (
+                            <TagBadge
+                                key={tag._id}
+                                label={tag.label}
+                                color={tag.color}
+                                showRemoveBtn
+                                onRemove={() => onTagSelect(tag)}
+                            ></TagBadge>
+                        ))}
                     </div>
                 </div>
             </div>

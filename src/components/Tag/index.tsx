@@ -6,9 +6,10 @@ interface TagProps {
     label: string;
     color: TagColor;
     showRemoveBtn?: boolean;
+    onRemove?: () => void;
 }
 
-const Tag: React.FC<TagProps> = (props: TagProps) => {
+const TagBadge: React.FC<TagProps> = (props: TagProps) => {
     props.label;
     return (
         <div
@@ -17,7 +18,7 @@ const Tag: React.FC<TagProps> = (props: TagProps) => {
         >
             <div className="text-xs">{props.label}</div>
             {props.showRemoveBtn ? (
-                <button>
+                <button onClick={props.onRemove}>
                     <Icon
                         icon="material-symbols:close"
                         width={15}
@@ -30,8 +31,8 @@ const Tag: React.FC<TagProps> = (props: TagProps) => {
     );
 };
 
-Tag.defaultProps = {
+TagBadge.defaultProps = {
     showRemoveBtn: false,
 };
 
-export default Tag;
+export default TagBadge;

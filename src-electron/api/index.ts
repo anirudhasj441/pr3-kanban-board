@@ -4,7 +4,7 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ipcRenderer } from "electron";
-import { Status, Task } from "../../types";
+import { Status, Tag, Task } from "../../types";
 
 const electronAPI = {
     close: (): void => {
@@ -22,6 +22,12 @@ const electronAPI = {
     getTasks: (projectId: string): void => {
         ipcRenderer.send("getTasks", projectId);
     },
+    getAllTags: (projectId: string): void => {
+        ipcRenderer.send("getAllTags", projectId);
+    },
+    getTaskTags: (projectId: string, taskId: string): void => {
+        ipcRenderer.send("getTaskTags", projectId, taskId);
+    },
     createProject: (projectTitle: string): void => {
         ipcRenderer.send("createProject", projectTitle);
     },
@@ -37,7 +43,13 @@ const electronAPI = {
         tagLabel: string,
         tagColor: string
     ): void => {
-        ipcRenderer.send("craeteTag", projectId, tagLabel, tagColor);
+        ipcRenderer.send("createTag", projectId, tagLabel, tagColor);
+    },
+    attachTagToTask: (projectId: string, taskId: string, tag: Tag): void => {
+        ipcRenderer.send("attachTagToTask", projectId, taskId, tag);
+    },
+    detachTagFromTask: (projectId: string, taskId: string, tag: Tag): void => {
+        ipcRenderer.send("detachTagFromTask", projectId, taskId, tag);
     },
     deleteTask: (projectId: string, taskId: string): void => {
         ipcRenderer.send("deleteTask", projectId, taskId);

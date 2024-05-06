@@ -2,7 +2,7 @@ import { app, BrowserWindow, ipcMain, IpcMainEvent } from "electron";
 import path from "path";
 import { fileURLToPath } from "url";
 import DbModel from "./db";
-import { Project, Status, Task } from "../types";
+import { Project, Status, Tag, TagColor, Task } from "../types";
 
 const __filename: string = fileURLToPath(import.meta.url);
 const __dirname: string = path.dirname(__filename);
@@ -135,16 +135,51 @@ app.whenReady().then(() => {
             dbModel.setJson();
         }
     );
+    ipcMain.on("getAllTags", (event: IpcMainEvent, projectId: string) => {
+        const tags: Tag[] = dbModel.getAllTags(projectId);
+
+        event.sender.send("getAllTags", tags);
+    });
+    ipcMain.on(
+        "getTaskTags",
+        (event: IpcMainEvent, projectId: string, taskId: string) => {
+            const tags: Tag[] = dbModel.getTaskTags(projectId, taskId);
+
+            event.sender.send("getTaskTags", tags);
+        }
+    );
     ipcMain.on(
         "createTag",
         (
             event: IpcMainEvent,
             projectId: string,
             tagLabel: string,
-            tagColor: string
+            tagColor: TagColor
         ) => {
             dbModel.createTag(projectId, tagLabel, tagColor);
             dbModel.setJson();
+            event.sender.send("getAllTags", dbModel.getAllTags(projectId));
+        }
+    );
+    ipcMain.on(
+        "attachTagToTask",
+        (event: IpcMainEvent, projectId: string, taskId: string, tag: Tag) => {
+            dbModel.attachTagToTask(projectId, taskId, tag);
+            dbModel.setJson();
+            event.sender.send("getTasks", dbModel.getAllTasks(projectId));
+        }
+    );
+    ipcMain.on(
+        "detachTagFromTask",
+        (
+            event: Electron.IpcMainEvent,
+            projectId: string,
+            taskId: string,
+            tag: Tag
+        ) => {
+            dbModel.detachTagFromTask(projectId, taskId, tag);
+            dbModel.setJson();
+            event.sender.send("getTasks", dbModel.getAllTasks(projectId));
         }
     );
 });
