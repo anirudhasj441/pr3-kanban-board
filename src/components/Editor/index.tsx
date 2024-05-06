@@ -68,6 +68,34 @@ const Editor: React.FC<EditorProps> = (props: EditorProps) => {
 
     const { setEditorValue, getEditorValue } = editorStateStore();
 
+    const convertMarkdownToNodes = () => {
+        editorRef.current?.update(() => {
+            const root = $getRoot();
+            const nodes = root.getChildren();
+            const editor_state: EditorState | undefined =
+                editorRef.current?.getEditorState();
+            const editorValue: SerializedEditorState | undefined =
+                editor_state?.toJSON();
+            if (!editorValue) return;
+
+            setEditorValue(editorValue);
+            const markdownList = nodes.map((node: LexicalNode) => {
+                const nodeText = node.getTextContent();
+                return nodeText.trim().length > 0 ? nodeText : "\n";
+            });
+            const markdown = markdownList.join("\n");
+            $convertFromMarkdownString(markdown, EDITOR_TRANSFORMERS);
+        });
+    };
+
+    const convertNodeToMarkdown = () => {
+        const editorValue: SerializedEditorState | undefined = getEditorValue();
+        if (!editorValue) return;
+        const editor_state = editorRef.current?.parseEditorState(editorValue);
+        if (!editor_state) return;
+        editorRef.current?.setEditorState(editor_state);
+    };
+
     const onChange = useCallback((editorState: EditorState) => {
         setEditorState(editorState);
     }, []);
@@ -104,7 +132,6 @@ const Editor: React.FC<EditorProps> = (props: EditorProps) => {
             if (!mounted) return;
             editorRef.current?.setEditable(props.editMode);
             if (props.task.desc === "") return;
-            console.log("editMode Change");
             setEditorMode(props.editMode ? "edit" : "preview");
             const taskDesc: SerializedEditorState = JSON.parse(props.task.desc);
             if (editorRef.current) {
@@ -132,42 +159,6 @@ const Editor: React.FC<EditorProps> = (props: EditorProps) => {
         theme,
         nodes: [...EditorNodes],
         onError,
-    };
-
-    const convertMarkdownToNodes = () => {
-        editorRef.current?.update(() => {
-            const root = $getRoot();
-            const nodes = root.getChildren();
-            const editor_state: EditorState | undefined =
-                editorRef.current?.getEditorState();
-            const editorValue: SerializedEditorState | undefined =
-                editor_state?.toJSON();
-            console.log("HERE!!!", editor_state);
-            if (!editorValue) return;
-
-            setEditorValue(editorValue);
-            const markdownList = nodes.map((node: LexicalNode) => {
-                const nodeText = node.getTextContent();
-                console.log(
-                    "node: ",
-                    nodeText,
-                    ": ",
-                    node.getTextContentSize()
-                );
-                return nodeText.trim().length > 0 ? nodeText : "\n";
-            });
-            const markdown = markdownList.join("\n");
-            console.log("markdown: ", markdown);
-            $convertFromMarkdownString(markdown, EDITOR_TRANSFORMERS);
-        });
-    };
-
-    const convertNodeToMarkdown = () => {
-        const editorValue: SerializedEditorState | undefined = getEditorValue();
-        if (!editorValue) return;
-        const editor_state = editorRef.current?.parseEditorState(editorValue);
-        if (!editor_state) return;
-        editorRef.current?.setEditorState(editor_state);
     };
 
     return (

@@ -54,7 +54,6 @@ const TaskDetail: React.FC<TaskDetailProps> = (props: TaskDetailProps) => {
             const result = props.task.tags?.find(
                 (tag: Tag) => tag._id == aTag._id
             );
-            console.log(result, ": ", result !== undefined);
             return result !== undefined;
         },
         [props]
@@ -63,12 +62,9 @@ const TaskDetail: React.FC<TaskDetailProps> = (props: TaskDetailProps) => {
     const onTagSelect = useCallback(
         (tag: Tag) => {
             if (!projectId) return;
-            console.log("tag is attached: ", tagAttached(tag));
             if (!tagAttached(tag)) {
-                console.log("Attaching...");
                 electronAPI.attachTagToTask(projectId, props.task._id, tag);
             } else {
-                console.log("Detaching...");
                 electronAPI.detachTagFromTask(projectId, props.task._id, tag);
             }
         },
@@ -79,7 +75,6 @@ const TaskDetail: React.FC<TaskDetailProps> = (props: TaskDetailProps) => {
      * Slot for receive tags from Electron Process
      */
     const handleGetAllTags = useCallback((tags: Tag[]) => {
-        console.log("fetching Tags!!!", tags);
         setTags(tags);
     }, []);
 

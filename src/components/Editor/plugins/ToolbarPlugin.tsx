@@ -43,7 +43,6 @@ const ToolbarPlugin: React.FC<ToolbarPluginProps> = (
                     const editorValue: SerializedEditorState =
                         editorState.toJSON();
                     setEditorValue(editorValue);
-                    console.log("NODES: ", nodes);
                     const markdownList = nodes.map((node: LexicalNode) =>
                         node.getTextContent().trim().length > 0
                             ? node.getTextContent()
@@ -56,7 +55,6 @@ const ToolbarPlugin: React.FC<ToolbarPluginProps> = (
             } else {
                 const editorValue: SerializedEditorState | undefined =
                     getEditorValue();
-                console.log("nodes: ", editorValue);
                 if (!editorValue) return;
                 const editor_state: EditorState =
                     editor.parseEditorState(editorValue);

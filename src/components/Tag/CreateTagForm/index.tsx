@@ -53,7 +53,6 @@ const CreateTagForm: React.FC<CreateTagFormProps> = (
     );
 
     const handleCrateTag = useCallback(() => {
-        console.log("label: ", label, "color", tagColor);
         if (label === "" || tagColor === "" || !projectId) return;
         electronAPI.createTag(projectId, label, tagColor);
     }, [label, tagColor, projectId]);

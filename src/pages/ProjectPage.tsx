@@ -52,7 +52,6 @@ const ProjectPage: React.FC = () => {
 
     const handleGetTasks = useCallback(
         (tasks: Task[]) => {
-            console.log("getting tasks: ", tasks);
             setTasks(tasks);
         },
         [setTasks]
