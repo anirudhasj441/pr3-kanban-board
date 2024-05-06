@@ -1,3 +1,9 @@
+/**
+ * @fileoverview routes declarations
+ *
+ * @author Anirudha Jadhav <anirudhasj441@gmail.com>
+ */
+
 import { RouteObject } from "react-router-dom";
 import MainLayout from "../layout/MainLayout";
 import StartPage from "../pages/StartPage";

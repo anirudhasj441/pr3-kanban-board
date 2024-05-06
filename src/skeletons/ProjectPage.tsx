@@ -1,3 +1,9 @@
+/**
+ * @fileoverview skeleton for Project page.
+ *
+ * @author Anirudha Jadhav <anirudhasj441@gmail.com>
+ */
+
 import React from "react";
 import Skeleton from "react-loading-skeleton";
 import MyScrollArea from "../components/ScrollArea";

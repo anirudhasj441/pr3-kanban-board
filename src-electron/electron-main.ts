@@ -1,3 +1,9 @@
+/**
+ * @fileoverview entrypoint for electron main process
+ *
+ * @author Anirudha Jadhav <anirudhasj441@gmail.com>
+ */
+
 import { app, BrowserWindow, ipcMain, IpcMainEvent } from "electron";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -39,6 +45,8 @@ const createWindow = () => {
 app.whenReady().then(() => {
     createWindow();
     const dbModel = new DbModel();
+
+    // Handling all electron preload listeners
     ipcMain.on("close", () => {
         mainWindow?.close();
     });
