@@ -8,7 +8,11 @@ It will have drag and drop compatibility, to reorder tasks and change status.
 
 I had work with electron js and I want to focus only on react now, So I planned to crate a desktop application using electron js instead of web app, so i don't worry about db, backend server and all.
 
-Tech Stack:
+## Demo
+
+![demo](./docs/demo.gif)
+
+## Tech Stack:
 
 1. React
 2. React Router
